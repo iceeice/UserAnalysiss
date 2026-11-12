@@ -1,0 +1,3058 @@
+<!DOCTYPE html>
+<!-- saved from url=(0069)file:///D:/Downloads/commercial_office_user_activity_loop_system.html -->
+<html lang="en" class="h-full bg-slate-50 text-slate-800" data-qb-installed="true"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Analysis</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="./User Analysis_files/saved_resource"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="./User Analysis_files/all.min.css">
+  
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+  <link href="./User Analysis_files/css2" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Custom high-contrast black cursors with clean white borders for maximum visibility */
+    #loopCanvas {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='black' stroke='white' stroke-width='1.5'><path d='M4.5 3.5L11.5 20.5L14.5 13.5L21.5 10.5L4.5 3.5Z'/></svg>"), default !important;
+    }
+    #loopCanvas.is-dragging, #loopCanvas:active {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='black' stroke='white' stroke-width='1.5'><path d='M10 2a2 2 0 0 1 2 2v6.17l.83-.83a2 2 0 0 1 2.83 2.83l-4.59 4.58A6 6 0 0 1 6.83 20H6a2 2 0 0 1-2-2v-4a6 6 0 0 1 1.76-4.24l3.41-3.42A2 2 0 0 1 10 2z'/></svg>"), grabbing !important;
+    }
+    #loopCanvas.cursor-pointer-black {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='black' stroke='white' stroke-width='1.5'><path d='M9 2a1 1 0 0 0-1 1v8H7a1 1 0 0 0-1 1v6a5 5 0 0 0 5 5h3a5 5 0 0 0 5-5v-5a1 1 0 0 0-1-1h-1V9a1 1 0 0 0-2 0v2h-1V7a1 1 0 0 0-2 0v4h-1V3a1 1 0 0 0-1-1z'/></svg>"), pointer !important;
+    }
+    #loopCanvas.cursor-crosshair-black {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5'><circle cx='12' cy='12' r='8'/><line x1='12' y1='2' x2='12' y2='6'/><line x1='12' y1='18' x2='12' y2='22'/><line x1='2' y1='12' x2='6' y2='12'/><line x1='18' y1='12' x2='22' y2='12'/></svg>") 12 12, crosshair !important;
+    }
+    
+    /* Modern Light Glassmorphism utility styles */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+    }
+
+    .glass-btn {
+      background: rgba(241, 245, 249, 0.9);
+      border: 1px solid rgba(203, 213, 225, 0.8);
+      color: #334155;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-btn:hover {
+      background: #ffffff;
+      border-color: rgba(2, 132, 199, 0.6);
+      color: #0284c7;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.12);
+    }
+    .glass-btn.active {
+      background: rgba(14, 165, 233, 0.12);
+      border-color: #0284c7;
+      color: #0369a1;
+      box-shadow: 0 0 12px rgba(2, 132, 199, 0.2);
+    }
+
+    /* Custom range slider styling */
+    input[type=range] {
+      accent-color: #0284c7;
+    }
+
+    /* Scrollbar customization */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(241, 245, 249, 0.8);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.7);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 1);
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Inter, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:JetBrains Mono, monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.bottom-4{bottom:1rem}.left-1\/2{left:50%}.left-4{left:1rem}.right-4{right:1rem}.top-4{top:1rem}.z-10{z-index:10}.z-20{z-index:20}.z-30{z-index:30}.z-50{z-index:50}.-mx-1{margin-left:-0.25rem;margin-right:-0.25rem}.mb-1{margin-bottom:0.25rem}.mr-0\.5{margin-right:0.125rem}.mr-1{margin-right:0.25rem}.mt-1{margin-top:0.25rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-16{height:4rem}.h-2{height:0.5rem}.h-3{height:0.75rem}.h-4{height:1rem}.h-5{height:1.25rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-full{height:100%}.h-1\.5{height:0.375rem}.max-h-60{max-height:15rem}.w-2{width:0.5rem}.w-8{width:2rem}.w-80{width:20rem}.w-9{width:2.25rem}.w-full{width:100%}.w-px{width:1px}.w-3{width:0.75rem}.w-4{width:1rem}.w-20{width:5rem}.w-5{width:1.25rem}.min-w-0{min-width:0px}.max-w-\[90vw\]{max-width:90vw}.max-w-\[95vw\]{max-width:95vw}.max-w-md{max-width:28rem}.max-w-sm{max-width:24rem}.max-w-xs{max-width:20rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.cursor-text{cursor:text}.appearance-none{-webkit-appearance:none;appearance:none}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-x-3{column-gap:0.75rem}.gap-y-1\.5{row-gap:0.375rem}.space-x-1 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.25rem * var(--tw-space-x-reverse));margin-left:calc(0.25rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.375rem * var(--tw-space-x-reverse));margin-left:calc(0.375rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-3 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.75rem * var(--tw-space-x-reverse));margin-left:calc(0.75rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-4 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(1rem * var(--tw-space-x-reverse));margin-left:calc(1rem * calc(1 - var(--tw-space-x-reverse)))}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-0{border-width:0px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-t{border-top-width:1px}.border-amber-300{--tw-border-opacity:1;border-color:rgb(252 211 77 / var(--tw-border-opacity, 1))}.border-rose-200{--tw-border-opacity:1;border-color:rgb(254 205 211 / var(--tw-border-opacity, 1))}.border-sky-200{--tw-border-opacity:1;border-color:rgb(186 230 253 / var(--tw-border-opacity, 1))}.border-sky-300{--tw-border-opacity:1;border-color:rgb(125 211 252 / var(--tw-border-opacity, 1))}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.border-slate-200\/60{border-color:rgb(226 232 240 / 0.6)}.bg-amber-500{--tw-bg-opacity:1;background-color:rgb(245 158 11 / var(--tw-bg-opacity, 1))}.bg-amber-500\/10{background-color:rgb(245 158 11 / 0.1)}.bg-emerald-600{--tw-bg-opacity:1;background-color:rgb(5 150 105 / var(--tw-bg-opacity, 1))}.bg-purple-500{--tw-bg-opacity:1;background-color:rgb(168 85 247 / var(--tw-bg-opacity, 1))}.bg-rose-50{--tw-bg-opacity:1;background-color:rgb(255 241 242 / var(--tw-bg-opacity, 1))}.bg-sky-100{--tw-bg-opacity:1;background-color:rgb(224 242 254 / var(--tw-bg-opacity, 1))}.bg-sky-50{--tw-bg-opacity:1;background-color:rgb(240 249 255 / var(--tw-bg-opacity, 1))}.bg-sky-500{--tw-bg-opacity:1;background-color:rgb(14 165 233 / var(--tw-bg-opacity, 1))}.bg-sky-600{--tw-bg-opacity:1;background-color:rgb(2 132 199 / var(--tw-bg-opacity, 1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-slate-900\/40{background-color:rgb(15 23 42 / 0.4)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/90{background-color:rgb(255 255 255 / 0.9)}.bg-rose-600{--tw-bg-opacity:1;background-color:rgb(225 29 72 / var(--tw-bg-opacity, 1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.bg-transparent{background-color:transparent}.p-0\.5{padding:0.125rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-1{padding:0.25rem}.p-2\.5{padding:0.625rem}.p-0{padding:0px}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.pb-2{padding-bottom:0.5rem}.pr-1{padding-right:0.25rem}.pt-1{padding-top:0.25rem}.pt-2{padding-top:0.5rem}.pt-3{padding-top:0.75rem}.pt-0\.5{padding-top:0.125rem}.text-right{text-align:right}.font-mono{font-family:JetBrains Mono, monospace}.font-sans{font-family:Inter, sans-serif}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[9px\]{font-size:9px}.text-base{font-size:1rem;line-height:1.5rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xs{font-size:0.75rem;line-height:1rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.tracking-tight{letter-spacing:-0.025em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6 / var(--tw-text-opacity, 1))}.text-amber-700{--tw-text-opacity:1;color:rgb(180 83 9 / var(--tw-text-opacity, 1))}.text-amber-800{--tw-text-opacity:1;color:rgb(146 64 14 / var(--tw-text-opacity, 1))}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105 / var(--tw-text-opacity, 1))}.text-emerald-700{--tw-text-opacity:1;color:rgb(4 120 87 / var(--tw-text-opacity, 1))}.text-purple-600{--tw-text-opacity:1;color:rgb(147 51 234 / var(--tw-text-opacity, 1))}.text-purple-700{--tw-text-opacity:1;color:rgb(126 34 206 / var(--tw-text-opacity, 1))}.text-rose-500{--tw-text-opacity:1;color:rgb(244 63 94 / var(--tw-text-opacity, 1))}.text-rose-700{--tw-text-opacity:1;color:rgb(190 18 60 / var(--tw-text-opacity, 1))}.text-sky-600{--tw-text-opacity:1;color:rgb(2 132 199 / var(--tw-text-opacity, 1))}.text-sky-700{--tw-text-opacity:1;color:rgb(3 105 161 / var(--tw-text-opacity, 1))}.text-sky-800{--tw-text-opacity:1;color:rgb(7 89 133 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-rose-600{--tw-text-opacity:1;color:rgb(225 29 72 / var(--tw-text-opacity, 1))}.text-rose-900{--tw-text-opacity:1;color:rgb(136 19 55 / var(--tw-text-opacity, 1))}.text-indigo-500{--tw-text-opacity:1;color:rgb(99 102 241 / var(--tw-text-opacity, 1))}.text-amber-500{--tw-text-opacity:1;color:rgb(245 158 11 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.accent-purple-600{accent-color:#9333ea}.opacity-0{opacity:0}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-inner{--tw-shadow:inset 0 2px 4px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:inset 0 2px 4px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-emerald-600\/20{--tw-shadow-color:rgb(5 150 105 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.shadow-sky-600\/20{--tw-shadow-color:rgb(2 132 199 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.outline-none{outline:2px solid transparent;outline-offset:2px}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-500{transition-duration:500ms}.duration-300{transition-duration:300ms}.hover\:bg-emerald-700:hover{--tw-bg-opacity:1;background-color:rgb(4 120 87 / var(--tw-bg-opacity, 1))}.hover\:bg-rose-100:hover{--tw-bg-opacity:1;background-color:rgb(255 228 230 / var(--tw-bg-opacity, 1))}.hover\:bg-sky-700:hover{--tw-bg-opacity:1;background-color:rgb(3 105 161 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-100:hover{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-200:hover{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.hover\:bg-sky-100:hover{--tw-bg-opacity:1;background-color:rgb(224 242 254 / var(--tw-bg-opacity, 1))}.hover\:text-emerald-900:hover{--tw-text-opacity:1;color:rgb(6 78 59 / var(--tw-text-opacity, 1))}.hover\:text-purple-900:hover{--tw-text-opacity:1;color:rgb(88 28 135 / var(--tw-text-opacity, 1))}.hover\:text-sky-700:hover{--tw-text-opacity:1;color:rgb(3 105 161 / var(--tw-text-opacity, 1))}.hover\:text-sky-800:hover{--tw-text-opacity:1;color:rgb(7 89 133 / var(--tw-text-opacity, 1))}.hover\:text-sky-900:hover{--tw-text-opacity:1;color:rgb(12 74 110 / var(--tw-text-opacity, 1))}.hover\:text-slate-600:hover{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.hover\:text-slate-900:hover{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.focus\:bg-white:focus{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-1:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-emerald-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(16 185 129 / var(--tw-ring-opacity, 1))}.focus\:ring-sky-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(14 165 233 / var(--tw-ring-opacity, 1))}.focus\:ring-purple-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(168 85 247 / var(--tw-ring-opacity, 1))}.disabled\:opacity-40:disabled{opacity:0.4}.group:hover .group-hover\:opacity-100{opacity:1}@media (min-width: 640px){.sm\:block{display:block}.sm\:inline{display:inline}.sm\:space-x-4 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(1rem * var(--tw-space-x-reverse));margin-left:calc(1rem * calc(1 - var(--tw-space-x-reverse)))}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-sm{font-size:0.875rem;line-height:1.25rem}}@media (min-width: 1024px){.lg\:flex{display:flex}.lg\:w-96{width:24rem}}@media (min-width: 1280px){.xl\:inline{display:inline}}</style><style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Inter, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:JetBrains Mono, monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.bottom-4{bottom:1rem}.left-1\/2{left:50%}.left-4{left:1rem}.right-4{right:1rem}.top-4{top:1rem}.z-10{z-index:10}.z-20{z-index:20}.z-30{z-index:30}.z-50{z-index:50}.-mx-1{margin-left:-0.25rem;margin-right:-0.25rem}.mb-1{margin-bottom:0.25rem}.mr-0\.5{margin-right:0.125rem}.mr-1{margin-right:0.25rem}.mt-1{margin-top:0.25rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-1\.5{height:0.375rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-3{height:0.75rem}.h-4{height:1rem}.h-5{height:1.25rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-full{height:100%}.max-h-60{max-height:15rem}.w-2{width:0.5rem}.w-20{width:5rem}.w-3{width:0.75rem}.w-4{width:1rem}.w-5{width:1.25rem}.w-8{width:2rem}.w-80{width:20rem}.w-9{width:2.25rem}.w-full{width:100%}.w-px{width:1px}.w-1\.5{width:0.375rem}.min-w-0{min-width:0px}.max-w-\[90vw\]{max-width:90vw}.max-w-\[95vw\]{max-width:95vw}.max-w-md{max-width:28rem}.max-w-sm{max-width:24rem}.max-w-xs{max-width:20rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.cursor-text{cursor:text}.appearance-none{-webkit-appearance:none;appearance:none}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-x-3{column-gap:0.75rem}.gap-y-1\.5{row-gap:0.375rem}.space-x-1 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.25rem * var(--tw-space-x-reverse));margin-left:calc(0.25rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.375rem * var(--tw-space-x-reverse));margin-left:calc(0.375rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-3 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.75rem * var(--tw-space-x-reverse));margin-left:calc(0.75rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-4 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(1rem * var(--tw-space-x-reverse));margin-left:calc(1rem * calc(1 - var(--tw-space-x-reverse)))}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-0{border-width:0px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-t{border-top-width:1px}.border-amber-300{--tw-border-opacity:1;border-color:rgb(252 211 77 / var(--tw-border-opacity, 1))}.border-rose-200{--tw-border-opacity:1;border-color:rgb(254 205 211 / var(--tw-border-opacity, 1))}.border-sky-200{--tw-border-opacity:1;border-color:rgb(186 230 253 / var(--tw-border-opacity, 1))}.border-sky-300{--tw-border-opacity:1;border-color:rgb(125 211 252 / var(--tw-border-opacity, 1))}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-200\/60{border-color:rgb(226 232 240 / 0.6)}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.border-emerald-300{--tw-border-opacity:1;border-color:rgb(110 231 183 / var(--tw-border-opacity, 1))}.bg-amber-500{--tw-bg-opacity:1;background-color:rgb(245 158 11 / var(--tw-bg-opacity, 1))}.bg-amber-500\/10{background-color:rgb(245 158 11 / 0.1)}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.bg-emerald-600{--tw-bg-opacity:1;background-color:rgb(5 150 105 / var(--tw-bg-opacity, 1))}.bg-purple-500{--tw-bg-opacity:1;background-color:rgb(168 85 247 / var(--tw-bg-opacity, 1))}.bg-rose-50{--tw-bg-opacity:1;background-color:rgb(255 241 242 / var(--tw-bg-opacity, 1))}.bg-sky-100{--tw-bg-opacity:1;background-color:rgb(224 242 254 / var(--tw-bg-opacity, 1))}.bg-sky-50{--tw-bg-opacity:1;background-color:rgb(240 249 255 / var(--tw-bg-opacity, 1))}.bg-sky-500{--tw-bg-opacity:1;background-color:rgb(14 165 233 / var(--tw-bg-opacity, 1))}.bg-sky-600{--tw-bg-opacity:1;background-color:rgb(2 132 199 / var(--tw-bg-opacity, 1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-slate-900\/40{background-color:rgb(15 23 42 / 0.4)}.bg-transparent{background-color:transparent}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/90{background-color:rgb(255 255 255 / 0.9)}.bg-emerald-100{--tw-bg-opacity:1;background-color:rgb(209 250 229 / var(--tw-bg-opacity, 1))}.p-0{padding:0px}.p-0\.5{padding:0.125rem}.p-1{padding:0.25rem}.p-2{padding:0.5rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.pb-2{padding-bottom:0.5rem}.pr-1{padding-right:0.25rem}.pt-0\.5{padding-top:0.125rem}.pt-1{padding-top:0.25rem}.pt-2{padding-top:0.5rem}.pt-3{padding-top:0.75rem}.text-right{text-align:right}.font-mono{font-family:JetBrains Mono, monospace}.font-sans{font-family:Inter, sans-serif}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[9px\]{font-size:9px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.tracking-tight{letter-spacing:-0.025em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.text-amber-500{--tw-text-opacity:1;color:rgb(245 158 11 / var(--tw-text-opacity, 1))}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6 / var(--tw-text-opacity, 1))}.text-amber-700{--tw-text-opacity:1;color:rgb(180 83 9 / var(--tw-text-opacity, 1))}.text-amber-800{--tw-text-opacity:1;color:rgb(146 64 14 / var(--tw-text-opacity, 1))}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105 / var(--tw-text-opacity, 1))}.text-emerald-700{--tw-text-opacity:1;color:rgb(4 120 87 / var(--tw-text-opacity, 1))}.text-purple-600{--tw-text-opacity:1;color:rgb(147 51 234 / var(--tw-text-opacity, 1))}.text-purple-700{--tw-text-opacity:1;color:rgb(126 34 206 / var(--tw-text-opacity, 1))}.text-rose-500{--tw-text-opacity:1;color:rgb(244 63 94 / var(--tw-text-opacity, 1))}.text-rose-600{--tw-text-opacity:1;color:rgb(225 29 72 / var(--tw-text-opacity, 1))}.text-rose-700{--tw-text-opacity:1;color:rgb(190 18 60 / var(--tw-text-opacity, 1))}.text-sky-600{--tw-text-opacity:1;color:rgb(2 132 199 / var(--tw-text-opacity, 1))}.text-sky-700{--tw-text-opacity:1;color:rgb(3 105 161 / var(--tw-text-opacity, 1))}.text-sky-800{--tw-text-opacity:1;color:rgb(7 89 133 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-emerald-800{--tw-text-opacity:1;color:rgb(6 95 70 / var(--tw-text-opacity, 1))}.text-indigo-500{--tw-text-opacity:1;color:rgb(99 102 241 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.accent-purple-600{accent-color:#9333ea}.opacity-0{opacity:0}.opacity-100{opacity:1}.opacity-60{opacity:0.6}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-inner{--tw-shadow:inset 0 2px 4px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:inset 0 2px 4px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-emerald-600\/20{--tw-shadow-color:rgb(5 150 105 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.shadow-sky-600\/20{--tw-shadow-color:rgb(2 132 199 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.outline-none{outline:2px solid transparent;outline-offset:2px}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-300{transition-duration:300ms}.duration-500{transition-duration:500ms}.hover\:bg-emerald-700:hover{--tw-bg-opacity:1;background-color:rgb(4 120 87 / var(--tw-bg-opacity, 1))}.hover\:bg-rose-100:hover{--tw-bg-opacity:1;background-color:rgb(255 228 230 / var(--tw-bg-opacity, 1))}.hover\:bg-sky-100:hover{--tw-bg-opacity:1;background-color:rgb(224 242 254 / var(--tw-bg-opacity, 1))}.hover\:bg-sky-700:hover{--tw-bg-opacity:1;background-color:rgb(3 105 161 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-100:hover{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-200:hover{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.hover\:text-emerald-900:hover{--tw-text-opacity:1;color:rgb(6 78 59 / var(--tw-text-opacity, 1))}.hover\:text-purple-900:hover{--tw-text-opacity:1;color:rgb(88 28 135 / var(--tw-text-opacity, 1))}.hover\:text-sky-700:hover{--tw-text-opacity:1;color:rgb(3 105 161 / var(--tw-text-opacity, 1))}.hover\:text-sky-800:hover{--tw-text-opacity:1;color:rgb(7 89 133 / var(--tw-text-opacity, 1))}.hover\:text-sky-900:hover{--tw-text-opacity:1;color:rgb(12 74 110 / var(--tw-text-opacity, 1))}.hover\:text-slate-600:hover{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.hover\:text-slate-900:hover{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.focus\:bg-white:focus{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-1:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-emerald-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(16 185 129 / var(--tw-ring-opacity, 1))}.focus\:ring-purple-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(168 85 247 / var(--tw-ring-opacity, 1))}.focus\:ring-sky-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(14 165 233 / var(--tw-ring-opacity, 1))}.disabled\:opacity-40:disabled{opacity:0.4}.group:hover .group-hover\:opacity-100{opacity:1}@media (min-width: 640px){.sm\:block{display:block}.sm\:inline{display:inline}.sm\:space-x-4 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(1rem * var(--tw-space-x-reverse));margin-left:calc(1rem * calc(1 - var(--tw-space-x-reverse)))}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-sm{font-size:0.875rem;line-height:1.25rem}}@media (min-width: 1024px){.lg\:flex{display:flex}.lg\:w-96{width:24rem}}@media (min-width: 1280px){.xl\:inline{display:inline}}</style></head>
+<body class="h-full flex flex-col font-sans antialiased text-slate-800 bg-slate-50">
+
+  <!-- TOP APP CONTROL HEADER BAR -->
+  <header class="h-16 glass-panel border-b border-slate-200 px-4 flex items-center justify-between shrink-0 z-30">
+    <div class="flex items-center space-x-3">
+      <div>
+        <h1 class="font-bold text-sm sm:text-base text-slate-900 tracking-tight flex items-center gap-2">
+          <span id="app-main-title" contenteditable="true" spellcheck="false" title="Click to edit title" class="outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white rounded px-1 -mx-1 cursor-text transition-all">User Analysis</span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 border border-sky-200 font-semibold">Modern Light v3.3</span>
+        </h1>
+        <p class="text-xs text-slate-500 hidden sm:block">Spatial Flow Dynamics, Time-of-Day Multipliers &amp; Real-Time Node Occupancy</p>
+      </div>
+    </div>
+
+    <!-- HEADER SYSTEM HUD & ACTIONS -->
+    <div class="flex items-center space-x-2 sm:space-x-4"><div id="live-save-status-indicator" class="text-[10px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-mono font-bold flex items-center gap-1.5 transition-all duration-300 shadow-sm opacity-60"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live Saved</div>
+      <!-- Live Flow HUD -->
+      <div class="hidden lg:flex items-center space-x-4 bg-white/90 border border-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-mono shadow-sm">
+        <div class="flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+          <span class="text-slate-500">Flow Rate:</span>
+          <span id="hud-flow-rate" class="text-sky-700 font-bold">142 users/hr</span>
+        </div>
+        <div class="h-4 w-px bg-slate-200"></div>
+        <div class="flex items-center space-x-1.5">
+          <span class="text-slate-500">System Load:</span>
+          <span id="hud-utilization" class="text-emerald-600 font-bold">78.4%</span>
+        </div>
+      </div>
+
+      <!-- UNDO / REDO BUTTONS -->
+      <div class="flex items-center space-x-1">
+        <button id="btn-undo" class="glass-btn w-8 h-8 rounded-lg flex items-center justify-center text-slate-700 hover:text-slate-900 disabled:opacity-40 shadow-sm" title="Undo (Ctrl+Z)">
+          <i class="fa-solid fa-rotate-left text-xs"></i>
+        </button>
+        <button id="btn-redo" class="glass-btn w-8 h-8 rounded-lg flex items-center justify-center text-slate-700 hover:text-slate-900 disabled:opacity-40 shadow-sm" title="Redo (Ctrl+Y)" disabled="">
+          <i class="fa-solid fa-rotate-right text-xs"></i>
+        </button>
+      </div>
+
+      <!-- ADD NEW NODE BUTTON -->
+      <button id="btn-open-add-node-modal" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-emerald-700 hover:text-emerald-900 flex items-center gap-2 shadow-sm">
+        <i class="fa-solid fa-circle-plus text-emerald-600"></i>
+        <span>+ Add Node</span>
+      </button>
+
+      <!-- Manual Connection Tool Toggle -->
+      <button id="btn-toggle-connect-mode" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-purple-700 hover:text-purple-900 flex items-center gap-2 shadow-sm">
+        <i class="fa-solid fa-link text-purple-600"></i>
+        <span id="connect-mode-label">Connect Mode: OFF</span>
+      </button>
+
+      <!-- Export Canva Snapshot PNG Button -->
+      <button id="btn-export-png" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-sky-700 hover:text-sky-900 flex items-center gap-2 shadow-sm" title="Download PNG Snapshot">
+        <i class="fa-solid fa-camera text-sky-600"></i>
+        <span>Canva Snapshot</span>
+      </button>
+
+      <!-- Save Workspace Button -->
+      <button id="btn-save-workspace" class="glass-btn px-3 py-1.5 rounded-xl text-xs font-semibold text-emerald-700 hover:text-emerald-900 flex items-center gap-2 shadow-sm" title="Save Personal Workspace Changes">
+        <i class="fa-solid fa-floppy-disk text-emerald-600"></i>
+        <span>Save</span>
+      </button>
+
+      <!-- Time Clock Display -->
+      <div class="flex items-center space-x-3 bg-amber-500/10 border border-amber-300 px-3 py-1.5 rounded-xl text-amber-800">
+        <i id="time-icon" class="fa-solid fa-sun text-amber-500"></i>
+        <div>
+          <div id="time-phase-label" class="text-[9px] uppercase font-bold tracking-wider text-amber-700">Mid-Morning Focus</div>
+          <div id="clock-display" class="text-xs sm:text-sm font-mono font-bold text-slate-900">10:01 AM</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APPLICATION LAYOUT -->
+  <div class="flex-1 flex relative overflow-hidden">
+
+    <!-- INTERACTIVE CANVAS SYSTEM AREA -->
+    <div class="flex-1 relative bg-slate-50 overflow-hidden">
+      <!-- Main Visual Loop Canvas -->
+      <canvas id="loopCanvas" class="w-full h-full" width="848" height="829"></canvas>
+
+      <!-- LEGEND OVERLAY (Top Left) -->
+      <div class="absolute top-4 left-4 glass-panel p-3 rounded-xl border border-slate-200 text-xs space-y-2 z-10 shadow-lg max-w-xs">
+        <div class="flex items-center justify-between mb-1">
+          <div class="font-semibold text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-sky-600"></i> Classifications
+          </div>
+          <button id="btn-add-category" class="text-[10px] px-2 py-0.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-semibold flex items-center gap-1 shadow-sm transition-all cursor-pointer" title="Create New Classification">
+            <i class="fa-solid fa-plus text-[9px]"></i> Add Classification
+          </button>
+        </div>
+        <div id="legend-categories-container" class="grid grid-cols-2 gap-x-3 gap-y-1.5"><div class="flex items-center justify-between p-1 rounded-lg hover:bg-slate-100 cursor-pointer transition-colors group">
+          <div class="flex items-center space-x-1.5 min-w-0">
+            <span class="w-3 h-3 rounded-full shrink-0 border border-slate-300" style="background-color: #0284c7"></span>
+            <span class="text-[11px] font-semibold text-slate-700 truncate" title="Office Workstations">Office Workstations</span>
+          </div>
+          <i class="fa-solid fa-pen text-[9px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+        </div><div class="flex items-center justify-between p-1 rounded-lg hover:bg-slate-100 cursor-pointer transition-colors group">
+          <div class="flex items-center space-x-1.5 min-w-0">
+            <span class="w-3 h-3 rounded-full shrink-0 border border-slate-300" style="background-color: #d97706"></span>
+            <span class="text-[11px] font-semibold text-slate-700 truncate" title="Commercial &amp; Dining">Commercial &amp; Dining</span>
+          </div>
+          <i class="fa-solid fa-pen text-[9px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+        </div><div class="flex items-center justify-between p-1 rounded-lg hover:bg-slate-100 cursor-pointer transition-colors group">
+          <div class="flex items-center space-x-1.5 min-w-0">
+            <span class="w-3 h-3 rounded-full shrink-0 border border-slate-300" style="background-color: #9333ea"></span>
+            <span class="text-[11px] font-semibold text-slate-700 truncate" title="Transition &amp; Cores">Transition &amp; Cores</span>
+          </div>
+          <i class="fa-solid fa-pen text-[9px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+        </div><div class="flex items-center justify-between p-1 rounded-lg hover:bg-slate-100 cursor-pointer transition-colors group">
+          <div class="flex items-center space-x-1.5 min-w-0">
+            <span class="w-3 h-3 rounded-full shrink-0 border border-slate-300" style="background-color: #47db29"></span>
+            <span class="text-[11px] font-semibold text-slate-700 truncate" title="BOH/Services">BOH/Services</span>
+          </div>
+          <i class="fa-solid fa-pen text-[9px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+        </div></div>
+      </div>
+
+      <!-- EDIT CLASSIFICATION MODAL -->
+      <div id="modal-edit-category" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel bg-white p-5 rounded-2xl border border-slate-200 shadow-2xl w-full max-w-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 id="modal-category-title" class="font-bold text-sm text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-pen-to-square text-sky-600"></i> Edit Classification
+            </h3>
+            <button id="btn-close-cat-modal" class="text-slate-400 hover:text-slate-600">
+              <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block text-slate-500 font-medium mb-1">Category Name</label>
+              <input type="text" id="input-cat-name" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="Category Name">
+            </div>
+
+            <div>
+              <label class="block text-slate-500 font-medium mb-1">Theme Color</label>
+              <div class="flex items-center space-x-2">
+                <input type="color" id="input-cat-color" class="w-9 h-9 rounded border border-slate-200 cursor-pointer p-0.5 bg-white">
+                <input type="text" id="input-cat-hex" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="#0284c7">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-slate-500 font-medium mb-1">Description</label>
+              <textarea id="input-cat-desc" rows="2" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-normal focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="Spatial classification zone description..."></textarea>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+            <button id="btn-delete-cat-modal" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 flex items-center gap-1 transition-colors">
+              <i class="fa-solid fa-trash-can text-[10px]"></i> Delete
+            </button>
+            <div class="flex items-center space-x-2">
+              <button id="btn-cancel-cat-modal" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
+              <button id="btn-save-cat-modal" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-600/20">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD NEW NODE MODAL -->
+      <div id="modal-add-node" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass-panel bg-white p-5 rounded-2xl border border-slate-200 shadow-2xl w-full max-w-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-circle-plus text-emerald-600"></i> Add New Spatial Node
+            </h3>
+            <button id="btn-close-add-node-modal" class="text-slate-400 hover:text-slate-600">
+              <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block text-slate-500 font-medium mb-1">Node Title</label>
+              <input type="text" id="input-new-node-title" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Executive Lounge">
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-slate-500 font-medium">Classification Category</label>
+                <button type="button" id="btn-add-cat-from-node-modal" class="text-[10px] font-semibold text-sky-600 hover:text-sky-800 flex items-center gap-1">
+                  <i class="fa-solid fa-plus text-[9px]"></i> New Category
+                </button>
+              </div>
+              <select id="select-new-node-cat" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <!-- Injected via JS -->
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Max Capacity</label>
+                <input type="number" id="input-new-node-cap" value="100" min="10" max="500" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              </div>
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Base Occupancy</label>
+                <input type="number" id="input-new-node-base" value="50" min="5" max="300" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-slate-500 font-medium mb-1">FontAwesome Icon</label>
+              <select id="select-new-node-icon" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="fa-building">Building Core (fa-building)</option>
+                <option value="fa-mug-hot">Coffee / Cafe (fa-mug-hot)</option>
+                <option value="fa-utensils">Dining / Food (fa-utensils)</option>
+                <option value="fa-laptop-code">Desk Workstation (fa-laptop-code)</option>
+                <option value="fa-couch">Lounge Zone (fa-couch)</option>
+                <option value="fa-store">Retail Shop (fa-store)</option>
+                <option value="fa-tree">Outdoor Terrace (fa-tree)</option>
+                <option value="fa-id-card">Security Gate (fa-id-card)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex justify-end space-x-2 pt-2 border-t border-slate-100">
+            <button id="btn-cancel-add-node-modal" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
+            <button id="btn-save-new-node" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20">Add Node</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENARIO SELECTOR OVERLAY (Top Center) -->
+      <div class="absolute top-4 left-1/2 -translate-x-1/2 glass-panel px-3 py-2 rounded-2xl border border-sky-300 flex items-center space-x-2 z-10 shadow-xl max-w-[90vw]">
+        <span class="text-xs font-bold text-sky-700 uppercase tracking-wider flex items-center gap-1.5 shrink-0">
+          <i class="fa-solid fa-clapperboard text-amber-600"></i> Scenario:
+        </span>
+        <select id="select-scenario" class="bg-white border border-slate-300 text-slate-800 text-xs rounded-lg px-2.5 py-1 focus:ring-2 focus:ring-sky-500 focus:outline-none shadow-sm">
+          <option value="ALL">Dynamic Time-of-Day Traffic (Default)</option>
+          <option value="MORNING_EXPRESS">1. Morning Express Coffee &amp; Desk Rush (8:00 AM)</option>
+          <option value="MIDDAY_CROSSOVER">2. Midday Lunch &amp; Retail Cross-Over (12:30 PM)</option>
+          <option value="BOARDROOM_CLIENT">3. Afternoon Executive Client Meeting (2:30 PM)</option>
+          <option value="EVENING_SOCIAL">4. Evening Shopping, Cinema &amp; Alfresco (6:30 PM)</option>
+          <option value="SERVICE_LOGISTICS">5. Back-of-House Deliveries &amp; Operations (10:00 AM)</option>
+        </select>
+      </div>
+
+      <!-- FLOATING VIEW CONTROLS (Top Right) -->
+      <div class="absolute top-4 right-4 flex flex-col space-y-2 z-10">
+        <button id="btn-zoom-in" class="glass-btn w-9 h-9 rounded-lg flex items-center justify-center text-slate-700 hover:text-slate-900 shadow-sm" title="Zoom In">
+          <i class="fa-solid fa-plus text-sm"></i>
+        </button>
+        <button id="btn-zoom-out" class="glass-btn w-9 h-9 rounded-lg flex items-center justify-center text-slate-700 hover:text-slate-900 shadow-sm" title="Zoom Out">
+          <i class="fa-solid fa-minus text-sm"></i>
+        </button>
+        <button id="btn-reset-view" class="glass-btn w-9 h-9 rounded-lg flex items-center justify-center text-slate-700 hover:text-slate-900 shadow-sm" title="Reset Camera">
+          <i class="fa-solid fa-rotate text-sm"></i>
+        </button>
+      </div>
+
+      <!-- BOTTOM CONTROL TOOLBAR -->
+      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 glass-panel px-3 py-2 rounded-2xl border border-slate-200 flex items-center space-x-3 z-10 shadow-xl max-w-[95vw] overflow-x-auto">
+        <!-- Play / Pause -->
+        <button id="btn-play-pause" class="glass-btn p-2 rounded-xl text-sky-600 hover:text-sky-700 focus:outline-none shrink-0" title="Play / Pause">
+          <i id="icon-play-pause" class="fa-solid fa-pause text-sm"></i>
+        </button>
+
+        <div class="h-5 w-px bg-slate-200 shrink-0"></div>
+
+        <!-- Filter Loop Buttons -->
+        <div class="flex items-center space-x-1.5 shrink-0">
+          <span class="text-xs text-slate-500 font-medium mr-0.5 hidden xl:inline"><i class="fa-solid fa-route mr-1 text-sky-600"></i>Loop:</span>
+          <div id="loop-buttons-container" class="flex items-center space-x-1.5"><button data-loop="ALL" class="loop-filter-btn glass-btn text-[11px] px-2 py-1 rounded-lg shrink-0 active">All</button><button data-loop="OFFICE_INOUT" class="loop-filter-btn glass-btn text-[11px] px-2 py-1 rounded-lg shrink-0 ">Office Ingress / Egress Loop</button><button data-loop="OFFICE_WORK" class="loop-filter-btn glass-btn text-[11px] px-2 py-1 rounded-lg shrink-0 ">Office Productivity &amp; Collaboration</button><button data-loop="GRAB_GO" class="loop-filter-btn glass-btn text-[11px] px-2 py-1 rounded-lg shrink-0 ">Morning Express Coffee &amp; Grab &amp; Go</button><button data-loop="SOCIAL_DINING" class="loop-filter-btn glass-btn text-[11px] px-2 py-1 rounded-lg shrink-0 ">Midday Dining &amp; Social Loop</button><button data-loop="BROWSING" class="loop-filter-btn glass-btn text-[11px] px-2 py-1 rounded-lg shrink-0 ">Retail Shopping &amp; Leisure</button><button data-loop="LEISURE" class="loop-filter-btn glass-btn text-[11px] px-2 py-1 rounded-lg shrink-0 ">Entertainment &amp; Outdoor Alfresco</button><button data-loop="OPERATIONS" class="loop-filter-btn glass-btn text-[11px] px-2 py-1 rounded-lg shrink-0 ">Back-of-House Logistics</button></div>
+          <button id="btn-open-loop-manager" class="glass-btn text-[11px] px-2 py-1 rounded-lg shrink-0 text-sky-700 hover:text-sky-900 font-semibold border-sky-300 flex items-center gap-1">
+            <i class="fa-solid fa-pen-to-square text-[10px]"></i> Edit Loops
+          </button>
+        </div>
+
+        <div class="h-5 w-px bg-slate-200 shrink-0"></div>
+
+      <!-- ADD NEW NODE MODAL -->
+        <button id="btn-toggle-heatmap" class="glass-btn px-2.5 py-1 rounded-lg text-[11px] flex items-center space-x-1 text-slate-700 shrink-0">
+          <i class="fa-solid fa-fire text-rose-500"></i>
+          <span class="hidden sm:inline">Heatmap</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SIDE INSPECTOR PANEL -->
+    <aside class="w-80 lg:w-96 glass-panel border-l border-slate-200 flex flex-col shrink-0 z-20 overflow-y-auto">
+      
+      <!-- INSPECTOR HEADER -->
+      <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+        <h2 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+          <i class="fa-solid fa-circle-info text-sky-600"></i> Loop &amp; Node Inspector
+        </h2>
+        <span id="inspector-badge" class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">System Overview</span>
+      </div>
+
+      <!-- INSPECTOR CONTENT BODY -->
+      <div id="inspector-content" class="p-4 space-y-6">
+        
+        <!-- Connection Line Detailed View -->
+        <div id="view-conn-detail" class="space-y-4 hidden">
+        <div class="space-y-4">
+          <div class="p-3.5 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <div id="inspector-conn-icon-badge" class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold transition-colors" style="background-color: #d97706">
+                  <i class="fa-solid fa-route text-sm"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-xs text-slate-900">Central Food Court (Copy) (Copy) → Central Food Court (Copy)</h3>
+                  <span class="text-[10px] text-slate-500 uppercase tracking-wider">Office Productivity &amp; Collaboration Loop</span>
+                </div>
+              </div>
+              <button id="btn-close-conn-detail" class="text-slate-400 hover:text-slate-600 p-1">
+                <i class="fa-solid fa-xmark text-sm"></i>
+              </button>
+            </div>
+
+            <!-- Loop Capacity Load Bar -->
+            <div class="p-2.5 rounded-lg border text-xs space-y-1.5 bg-slate-50 border-slate-200">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold flex items-center gap-1.5">
+                  <i class="fa-solid fa-gauge-high text-sky-600"></i>
+                  Loop Capacity Utilization
+                </span>
+                <span class="font-mono font-bold text-slate-700">50%</span>
+              </div>
+              <div class="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-300 bg-emerald-500" style="width: 50%"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-slate-500 pt-0.5">
+                <span>Flow Volume: <strong>150 users/hr</strong></span>
+                <span>Max Capacity: <strong>300 users/hr</strong></span>
+              </div>
+            </div>
+
+            <div class="space-y-2.5 pt-2 border-t border-slate-100 text-xs">
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Line Classification Category</label>
+                <select id="select-conn-cat" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  
+                    <option value="office">Office Workstations</option>
+                  
+                    <option value="commercial" selected="">Commercial &amp; Dining</option>
+                  
+                    <option value="shared">Transition &amp; Cores</option>
+                  
+                    <option value="leisure">Leisure &amp; Entertainment</option>
+                  
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Loop Capacity Limit (users/hr)</label>
+                <div class="flex items-center space-x-2">
+                  <input type="number" id="input-conn-loop-capacity" value="300" min="50" max="2000" step="25" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  <button id="btn-open-loop-mgr-from-conn" class="px-2.5 py-1.5 text-[11px] rounded-lg bg-sky-50 border border-sky-200 text-sky-700 font-semibold shrink-0 hover:bg-sky-100">Manage Loops</button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Line Color Accent</label>
+                <div class="flex items-center space-x-2">
+                  <input type="color" id="input-conn-color" value="#d97706" class="w-8 h-8 rounded border border-slate-200 cursor-pointer p-0.5 bg-white">
+                  <button id="btn-reset-conn-color" class="px-2 py-1 text-[11px] rounded bg-slate-100 hover:bg-slate-200 text-slate-700">Use Category Color</button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Line Pattern Style</label>
+                <select id="select-conn-style" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  <option value="solid" selected="">Solid Line</option>
+                  <option value="dashed">Dashed Line</option>
+                  <option value="dotted">Dotted Line</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Curvature Offset: <span id="val-conn-curve">0.25</span></label>
+                <input type="range" id="slider-conn-curve" min="-0.8" max="0.8" step="0.05" value="0.25" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600">
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Assigned Loop Pathway</label>
+                <select id="select-conn-loop" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  
+                    <option value="OFFICE_INOUT">Office Ingress / Egress Loop</option>
+                  
+                    <option value="OFFICE_WORK" selected="">Office Productivity &amp; Collaboration</option>
+                  
+                    <option value="GRAB_GO">Morning Express Coffee &amp; Grab &amp; Go</option>
+                  
+                    <option value="SOCIAL_DINING">Midday Dining &amp; Social Loop</option>
+                  
+                    <option value="BROWSING">Retail Shopping &amp; Leisure</option>
+                  
+                    <option value="LEISURE">Entertainment &amp; Outdoor Alfresco</option>
+                  
+                    <option value="OPERATIONS">Back-of-House Logistics</option>
+                  
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Flow Density Multiplier: <span id="val-conn-density">1.5x</span></label>
+                <input type="range" id="slider-conn-density" min="0.5" max="3.0" step="0.1" value="1.5" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600">
+              </div>
+
+              <div class="flex items-center justify-between pt-1">
+                <span class="text-slate-500 font-medium">Show Directional Flow Arrow</span>
+                <input type="checkbox" id="chk-conn-arrow" checked="" class="w-4 h-4 text-purple-600 rounded border-slate-300 focus:ring-purple-500 cursor-pointer">
+              </div>
+            </div>
+          </div>
+
+          <button id="btn-delete-conn" class="w-full px-3 py-2 rounded-xl text-xs font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-trash-can"></i> Delete Connection Line
+          </button>
+        </div>
+      </div>
+
+        <!-- Default State: System Overview -->
+        <div id="view-system-overview" class="space-y-4">
+          <div class="p-3.5 bg-sky-50 border border-sky-200 rounded-xl space-y-2">
+            <h3 class="text-xs font-bold text-sky-800 uppercase tracking-wide">Interactive Canvas Guide</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Click any <span class="text-sky-700 font-semibold">Node</span> to view real-time occupancy percentages, max design capacities, dwell times, and active connection pathways.
+              <br><span class="text-xs font-semibold text-purple-700 mt-1 inline-block"><i class="fa-solid fa-copy text-purple-600 mr-1"></i>Tip: Alt + Click (Option + Click) any node to instantly clone it!</span>
+            </p>
+          </div>
+
+          <!-- Active Loop Description -->
+          <div class="space-y-2">
+            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Current Selected Loop</label>
+            <div id="active-loop-card" class="p-3 bg-white border border-slate-200 rounded-xl space-y-1.5 shadow-sm">
+              <div id="active-loop-title" class="font-bold text-sm text-sky-700">All Active Spatial Loops</div>
+              <p id="active-loop-desc" class="text-xs text-slate-600 leading-relaxed">
+                Displaying full interconnected user flows between Office Workstations, Commercial Retail/Dining, and Shared Elevators/Lobby spaces.
+              </p>
+            </div>
+          </div>
+
+          <!-- Space Occupancy Distribution Bar -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-semibold text-slate-500 uppercase tracking-wider">Spatial Density Share</span>
+              <span class="text-slate-500 font-mono text-[11px]">Live Distribution</span>
+            </div>
+            <div class="h-3 w-full bg-slate-100 rounded-full overflow-hidden flex border border-slate-200 shadow-inner">
+              <div id="bar-office-share" class="h-full bg-sky-500 transition-all duration-500" style="width: 45%;" title="Office Spaces"></div>
+              <div id="bar-comm-share" class="h-full bg-amber-500 transition-all duration-500" style="width: 35%;" title="Commercial Spaces"></div>
+              <div id="bar-trans-share" class="h-full bg-purple-500 transition-all duration-500" style="width: 20%;" title="Transition Cores"></div>
+            </div>
+            <div class="flex justify-between text-[11px] text-slate-600 pt-1">
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-sky-500"></span> Office (45%)</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Retail/Dining (35%)</span>
+              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-purple-500"></span> Shared (20%)</span>
+            </div>
+          </div>
+
+          <!-- Feedback Loop Analytics -->
+          <div class="space-y-2">
+            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Feedback Loop Dynamics</label>
+            <div class="p-3 bg-white border border-slate-200 rounded-xl space-y-2 text-xs shadow-sm">
+              <div class="flex justify-between items-center">
+                <span class="text-slate-700">Midday Commercial Cross-Over</span>
+                <span class="text-emerald-600 font-bold font-mono">+64% dwell</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-700">Elevator Wait Peak Impact</span>
+                <span class="text-amber-600 font-bold font-mono">4.2 min max</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-700">Space Feedback Loop Index</span>
+      <!-- LOOP MANAGER MODAL -->
+      <div id="modal-manage-loops" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel bg-white p-5 rounded-2xl border border-slate-200 shadow-2xl w-full max-w-md space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-route text-sky-600"></i> Loop Pathways Manager
+            </h3>
+            <button id="btn-close-loop-modal" class="text-slate-400 hover:text-slate-600">
+              <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+          </div>
+
+          <div id="loop-list-container" class="space-y-2 max-h-60 overflow-y-auto pr-1"><div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2 flex-1">
+              <input type="color" data-color-loop="OFFICE_INOUT" value="#0284c7" class="w-5 h-5 rounded border-0 cursor-pointer p-0 bg-transparent shrink-0">
+              <input type="text" data-title-loop="OFFICE_INOUT" value="Office Ingress / Egress Loop" class="w-full px-2 py-1 bg-white border border-slate-200 rounded font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+            </div>
+            <button data-delete-loop="OFFICE_INOUT" class="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-semibold border border-rose-200 flex items-center gap-1 transition-colors shrink-0" title="Delete loop">
+              <i class="fa-solid fa-trash-can text-[10px]"></i> Delete
+            </button>
+          </div>
+          <input type="text" data-desc-loop="OFFICE_INOUT" value="Primary morning arrival and evening departure corridors connecting Transit Gates to Office Reception and Vertical Cores." placeholder="Pathway description..." class="w-full px-2 py-1 bg-white border border-slate-200 rounded text-[11px] text-slate-600 focus:ring-1 focus:ring-sky-500">
+          <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[11px]">
+            <span class="text-slate-500 font-medium"><i class="fa-solid fa-gauge-high text-sky-600 mr-1"></i>Max Flow Capacity:</span>
+            <div class="flex items-center space-x-1">
+              <input type="number" data-capacity-loop="OFFICE_INOUT" value="450" min="50" max="2000" step="25" class="w-20 px-2 py-0.5 bg-white border border-slate-200 rounded text-right font-mono font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+              <span class="text-slate-400 text-[10px]">users/hr</span>
+            </div>
+          </div>
+        </div><div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2 flex-1">
+              <input type="color" data-color-loop="OFFICE_WORK" value="#2563eb" class="w-5 h-5 rounded border-0 cursor-pointer p-0 bg-transparent shrink-0">
+              <input type="text" data-title-loop="OFFICE_WORK" value="Office Productivity &amp; Collaboration" class="w-full px-2 py-1 bg-white border border-slate-200 rounded font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+            </div>
+            <button data-delete-loop="OFFICE_WORK" class="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-semibold border border-rose-200 flex items-center gap-1 transition-colors shrink-0" title="Delete loop">
+              <i class="fa-solid fa-trash-can text-[10px]"></i> Delete
+            </button>
+          </div>
+          <input type="text" data-desc-loop="OFFICE_WORK" value="Internal circulation between workstations, agile huddle pods, and executive boardrooms." placeholder="Pathway description..." class="w-full px-2 py-1 bg-white border border-slate-200 rounded text-[11px] text-slate-600 focus:ring-1 focus:ring-sky-500">
+          <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[11px]">
+            <span class="text-slate-500 font-medium"><i class="fa-solid fa-gauge-high text-sky-600 mr-1"></i>Max Flow Capacity:</span>
+            <div class="flex items-center space-x-1">
+              <input type="number" data-capacity-loop="OFFICE_WORK" value="300" min="50" max="2000" step="25" class="w-20 px-2 py-0.5 bg-white border border-slate-200 rounded text-right font-mono font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+              <span class="text-slate-400 text-[10px]">users/hr</span>
+            </div>
+          </div>
+        </div><div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2 flex-1">
+              <input type="color" data-color-loop="GRAB_GO" value="#d97706" class="w-5 h-5 rounded border-0 cursor-pointer p-0 bg-transparent shrink-0">
+              <input type="text" data-title-loop="GRAB_GO" value="Morning Express Coffee &amp; Grab &amp; Go" class="w-full px-2 py-1 bg-white border border-slate-200 rounded font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+            </div>
+            <button data-delete-loop="GRAB_GO" class="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-semibold border border-rose-200 flex items-center gap-1 transition-colors shrink-0" title="Delete loop">
+              <i class="fa-solid fa-trash-can text-[10px]"></i> Delete
+            </button>
+          </div>
+          <input type="text" data-desc-loop="GRAB_GO" value="High-velocity morning rush loop connecting entry portals to Express Cafe and quick breakfast stations." placeholder="Pathway description..." class="w-full px-2 py-1 bg-white border border-slate-200 rounded text-[11px] text-slate-600 focus:ring-1 focus:ring-sky-500">
+          <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[11px]">
+            <span class="text-slate-500 font-medium"><i class="fa-solid fa-gauge-high text-sky-600 mr-1"></i>Max Flow Capacity:</span>
+            <div class="flex items-center space-x-1">
+              <input type="number" data-capacity-loop="GRAB_GO" value="250" min="50" max="2000" step="25" class="w-20 px-2 py-0.5 bg-white border border-slate-200 rounded text-right font-mono font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+              <span class="text-slate-400 text-[10px]">users/hr</span>
+            </div>
+          </div>
+        </div><div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2 flex-1">
+              <input type="color" data-color-loop="SOCIAL_DINING" value="#f59e0b" class="w-5 h-5 rounded border-0 cursor-pointer p-0 bg-transparent shrink-0">
+              <input type="text" data-title-loop="SOCIAL_DINING" value="Midday Dining &amp; Social Loop" class="w-full px-2 py-1 bg-white border border-slate-200 rounded font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+            </div>
+            <button data-delete-loop="SOCIAL_DINING" class="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-semibold border border-rose-200 flex items-center gap-1 transition-colors shrink-0" title="Delete loop">
+              <i class="fa-solid fa-trash-can text-[10px]"></i> Delete
+            </button>
+          </div>
+          <input type="text" data-desc-loop="SOCIAL_DINING" value="Peak midday lunch rush interconnecting office elevator cores with the Central Food Court and Alfresco Plaza." placeholder="Pathway description..." class="w-full px-2 py-1 bg-white border border-slate-200 rounded text-[11px] text-slate-600 focus:ring-1 focus:ring-sky-500">
+          <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[11px]">
+            <span class="text-slate-500 font-medium"><i class="fa-solid fa-gauge-high text-sky-600 mr-1"></i>Max Flow Capacity:</span>
+            <div class="flex items-center space-x-1">
+              <input type="number" data-capacity-loop="SOCIAL_DINING" value="500" min="50" max="2000" step="25" class="w-20 px-2 py-0.5 bg-white border border-slate-200 rounded text-right font-mono font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+              <span class="text-slate-400 text-[10px]">users/hr</span>
+            </div>
+          </div>
+        </div><div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2 flex-1">
+              <input type="color" data-color-loop="BROWSING" value="#db2777" class="w-5 h-5 rounded border-0 cursor-pointer p-0 bg-transparent shrink-0">
+              <input type="text" data-title-loop="BROWSING" value="Retail Shopping &amp; Leisure" class="w-full px-2 py-1 bg-white border border-slate-200 rounded font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+            </div>
+            <button data-delete-loop="BROWSING" class="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-semibold border border-rose-200 flex items-center gap-1 transition-colors shrink-0" title="Delete loop">
+              <i class="fa-solid fa-trash-can text-[10px]"></i> Delete
+            </button>
+          </div>
+          <input type="text" data-desc-loop="BROWSING" value="Retail shopping circulation connecting ground floor storefronts to food and entertainment zones." placeholder="Pathway description..." class="w-full px-2 py-1 bg-white border border-slate-200 rounded text-[11px] text-slate-600 focus:ring-1 focus:ring-sky-500">
+          <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[11px]">
+            <span class="text-slate-500 font-medium"><i class="fa-solid fa-gauge-high text-sky-600 mr-1"></i>Max Flow Capacity:</span>
+            <div class="flex items-center space-x-1">
+              <input type="number" data-capacity-loop="BROWSING" value="350" min="50" max="2000" step="25" class="w-20 px-2 py-0.5 bg-white border border-slate-200 rounded text-right font-mono font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+              <span class="text-slate-400 text-[10px]">users/hr</span>
+            </div>
+          </div>
+        </div><div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2 flex-1">
+              <input type="color" data-color-loop="LEISURE" value="#9333ea" class="w-5 h-5 rounded border-0 cursor-pointer p-0 bg-transparent shrink-0">
+              <input type="text" data-title-loop="LEISURE" value="Entertainment &amp; Outdoor Alfresco" class="w-full px-2 py-1 bg-white border border-slate-200 rounded font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+            </div>
+            <button data-delete-loop="LEISURE" class="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-semibold border border-rose-200 flex items-center gap-1 transition-colors shrink-0" title="Delete loop">
+              <i class="fa-solid fa-trash-can text-[10px]"></i> Delete
+            </button>
+          </div>
+          <input type="text" data-desc-loop="LEISURE" value="Evening social pathways connecting cinema, lounge, and outdoor dining terraces." placeholder="Pathway description..." class="w-full px-2 py-1 bg-white border border-slate-200 rounded text-[11px] text-slate-600 focus:ring-1 focus:ring-sky-500">
+          <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[11px]">
+            <span class="text-slate-500 font-medium"><i class="fa-solid fa-gauge-high text-sky-600 mr-1"></i>Max Flow Capacity:</span>
+            <div class="flex items-center space-x-1">
+              <input type="number" data-capacity-loop="LEISURE" value="400" min="50" max="2000" step="25" class="w-20 px-2 py-0.5 bg-white border border-slate-200 rounded text-right font-mono font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+              <span class="text-slate-400 text-[10px]">users/hr</span>
+            </div>
+          </div>
+        </div><div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2 flex-1">
+              <input type="color" data-color-loop="OPERATIONS" value="#059669" class="w-5 h-5 rounded border-0 cursor-pointer p-0 bg-transparent shrink-0">
+              <input type="text" data-title-loop="OPERATIONS" value="Back-of-House Logistics" class="w-full px-2 py-1 bg-white border border-slate-200 rounded font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+            </div>
+            <button data-delete-loop="OPERATIONS" class="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-semibold border border-rose-200 flex items-center gap-1 transition-colors shrink-0" title="Delete loop">
+              <i class="fa-solid fa-trash-can text-[10px]"></i> Delete
+            </button>
+          </div>
+          <input type="text" data-desc-loop="OPERATIONS" value="Restricted back-of-house loading dock logistics and vendor delivery routes." placeholder="Pathway description..." class="w-full px-2 py-1 bg-white border border-slate-200 rounded text-[11px] text-slate-600 focus:ring-1 focus:ring-sky-500">
+          <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[11px]">
+            <span class="text-slate-500 font-medium"><i class="fa-solid fa-gauge-high text-sky-600 mr-1"></i>Max Flow Capacity:</span>
+            <div class="flex items-center space-x-1">
+              <input type="number" data-capacity-loop="OPERATIONS" value="200" min="50" max="2000" step="25" class="w-20 px-2 py-0.5 bg-white border border-slate-200 rounded text-right font-mono font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+              <span class="text-slate-400 text-[10px]">users/hr</span>
+            </div>
+          </div>
+        </div></div>
+
+          <div class="pt-2 border-t border-slate-100 space-y-3">
+            <div class="text-xs font-bold text-slate-700">Create New Loop Pathway</div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <input type="text" id="input-new-loop-key" placeholder="LOOP_KEY (e.g. VIP_EXPRESS)" class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg uppercase font-mono font-semibold focus:ring-2 focus:ring-sky-500">
+              <input type="text" id="input-new-loop-title" placeholder="Loop Title Name" class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg font-semibold focus:ring-2 focus:ring-sky-500">
+            </div>
+            <div class="flex items-center space-x-2 text-xs">
+              <input type="color" id="input-new-loop-color" value="#0284c7" class="w-8 h-8 rounded border border-slate-200 cursor-pointer p-0.5 bg-white">
+              <input type="text" id="input-new-loop-desc" placeholder="Brief description of spatial pathway flow..." class="flex-1 px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-sky-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Max Design Capacity (users/hr)</label>
+              <input type="number" id="input-new-loop-capacity" value="300" min="50" max="2000" step="50" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono font-semibold focus:ring-2 focus:ring-sky-500">
+            </div>
+            <button id="btn-create-loop" class="w-full py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold shadow-md shadow-sky-600/20 flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-plus text-[10px]"></i> Add Loop Pathway
+            </button>
+          </div>
+
+          <!-- Workspace Persistence Backup Actions -->
+          <div class="pt-3 border-t border-slate-200 flex items-center justify-between gap-2">
+            <button id="btn-export-json" class="flex-1 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-file-arrow-down"></i> Export JSON
+            </button>
+            <button id="btn-reset-factory" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold border border-rose-200 flex items-center justify-center gap-1">
+              <i class="fa-solid fa-rotate-left"></i> Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div></div></div></div><div id="view-node-detail" class="space-y-4 hidden">
+        <div class="space-y-4">
+          <div class="p-3.5 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold" style="background-color: #47db29">
+                  <i class="fa-solid fa-tree text-sm"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-xs text-slate-900">Outdoor Alfresco Terrace</h3>
+                  <span class="text-[10px] text-slate-500 uppercase tracking-wider">Leisure &amp; Entertainment</span>
+                </div>
+              </div>
+              <button id="btn-close-node-detail" class="text-slate-400 hover:text-slate-600 p-1">
+                <i class="fa-solid fa-xmark text-sm"></i>
+              </button>
+            </div>
+
+            <div class="space-y-2.5 pt-2 border-t border-slate-100 text-xs">
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Node Title</label>
+                <input type="text" id="input-node-title" value="Outdoor Alfresco Terrace" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Classification Category</label>
+                <select id="select-node-cat" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+                  
+                    <option value="office">Office Workstations</option>
+                  
+                    <option value="commercial">Commercial &amp; Dining</option>
+                  
+                    <option value="shared">Transition &amp; Cores</option>
+                  
+                    <option value="leisure" selected="">BOH/Services</option>
+                  
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Custom Color Accent</label>
+                <div class="flex items-center space-x-2">
+                  <input type="color" id="input-node-color" value="#47db29" class="w-8 h-8 rounded border border-slate-200 cursor-pointer p-0.5 bg-white">
+                  <button id="btn-reset-node-color" class="px-2 py-1 text-[11px] rounded bg-slate-100 hover:bg-slate-200 text-slate-700">Use Category Color</button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-slate-500 font-medium mb-1">Max Capacity</label>
+                  <input type="number" id="input-node-cap" value="120" min="10" max="500" class="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+                </div>
+                <div>
+                  <label class="block text-slate-500 font-medium mb-1">Base Occupancy</label>
+                  <input type="number" id="input-node-base" value="35" min="5" max="300" class="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">Live Occupancy</div>
+              <div id="inspector-live-occ" class="text-lg font-bold font-mono text-sky-700">53%</div>
+            </div>
+            <div class="p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">Active Users</div>
+              <div id="inspector-active-users" class="text-lg font-bold font-mono text-slate-800">64 / 120</div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+            <div class="text-xs font-semibold text-slate-700">Capacity Load Indicator</div>
+            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+              <div id="inspector-load-bar" class="h-full rounded-full transition-all duration-300" style="width: 53%; background-color: #47db29"></div>
+            </div>
+          </div>
+
+          <button id="btn-delete-node" class="w-full px-3 py-2 rounded-xl text-xs font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-trash-can"></i> Remove Node &amp; Connected Lines
+          </button>
+        </div>
+      </div></div></aside>
+
+  </div>
+
+  <!-- JAVASCRIPT SIMULATION ENGINE -->
+  <script>
+    // --- CANVAS & STATE SETUP ---
+    const canvas = document.getElementById('loopCanvas');
+    const ctx = canvas ? canvas.getContext('2d') : null;
+
+    let width = 0;
+    let height = 0;
+
+    // --- CLIPBOARD & MULTI-SELECT STATE ---
+    let copiedNodesClipboard = [];
+
+    // --- GLOBAL DATA STRUCTURES & DEFAULT STATES ---
+    const categories = {
+      office: { name: 'Office Workstations', color: '#0284c7', bg: '#e0f2fe', desc: 'Primary desk & focus zones' },
+      commercial: { name: 'Commercial & Dining', color: '#d97706', bg: '#fef3c7', desc: 'Food court, retail & cafes' },
+      shared: { name: 'Transition & Cores', color: '#9333ea', bg: '#f3e8ff', desc: 'Lobbies, elevators & plazas' },
+      leisure: { name: 'Leisure & Entertainment', color: '#db2777', bg: '#fce7f3', desc: 'Lounges & cinema zones' }
+    };
+
+    const nodes = [
+      { id: 'n1', title: 'Main Transit Lobby', category: 'shared', x: 200, y: 350, radius: 30, baseOccupancy: 80, maxCapacity: 200, typeLabel: 'Transition & Cores', color: '#9333ea', icon: 'fa-id-card' },
+      { id: 'n2', title: 'Express Cafe', category: 'commercial', x: 400, y: 200, radius: 26, baseOccupancy: 60, maxCapacity: 100, typeLabel: 'Commercial & Dining', color: '#d97706', icon: 'fa-mug-hot' },
+      { id: 'n3', title: 'Tower A Workstations', category: 'office', x: 650, y: 200, radius: 32, baseOccupancy: 120, maxCapacity: 250, typeLabel: 'Office Workstations', color: '#0284c7', icon: 'fa-laptop-code' },
+      { id: 'n4', title: 'Central Food Court', category: 'commercial', x: 450, y: 480, radius: 34, baseOccupancy: 90, maxCapacity: 300, typeLabel: 'Commercial & Dining', color: '#d97706', icon: 'fa-utensils' },
+      { id: 'n5', title: 'Executive Lounge', category: 'office', x: 700, y: 450, radius: 28, baseOccupancy: 40, maxCapacity: 80, typeLabel: 'Office Workstations', color: '#0284c7', icon: 'fa-couch' },
+      { id: 'n6', title: 'Outdoor Alfresco Terrace', category: 'leisure', x: 250, y: 550, radius: 28, baseOccupancy: 35, maxCapacity: 120, typeLabel: 'Leisure & Entertainment', color: '#db2777', icon: 'fa-tree' }
+    ];
+
+    const connections = [
+      { id: 'c1', from: 'n1', to: 'n2', loop: 'GRAB_GO', density: 1.8, curveOffset: 0.25, style: 'solid', showArrow: true, category: 'commercial' },
+      { id: 'c2', from: 'n2', to: 'n3', loop: 'OFFICE_WORK', density: 1.5, curveOffset: 0.2, style: 'solid', showArrow: true, category: 'office' },
+      { id: 'c3', from: 'n1', to: 'n4', loop: 'SOCIAL_DINING', density: 1.6, curveOffset: -0.3, style: 'solid', showArrow: true, category: 'commercial' },
+      { id: 'c4', from: 'n3', to: 'n4', loop: 'SOCIAL_DINING', density: 2.0, curveOffset: 0.25, style: 'dashed', showArrow: true, category: 'office' },
+      { id: 'c5', from: 'n3', to: 'n5', loop: 'OFFICE_WORK', density: 1.2, curveOffset: -0.2, style: 'solid', showArrow: true, category: 'office' },
+      { id: 'c6', from: 'n4', to: 'n6', loop: 'LEISURE', density: 1.4, curveOffset: 0.35, style: 'dotted', showArrow: true, category: 'leisure' },
+      { id: 'c7', from: 'n6', to: 'n1', loop: 'OFFICE_INOUT', density: 1.1, curveOffset: 0.2, style: 'solid', showArrow: true, category: 'shared' }
+    ];
+
+    let particles = [];
+    let selectedNodesArray = [];
+    let marqueeState = {
+      active: false,
+      startX: 0,
+      startY: 0,
+      currentX: 0,
+      currentY: 0,
+      timer: null
+    };
+
+    const transform = {
+      x: 0,
+      y: 0,
+      scale: 0.85,
+      isDragging: false,
+      startX: 0,
+      startY: 0
+    };
+
+    const simState = {
+      isPlaying: true,
+      speed: 1.0,
+      timeOfDay: 12.5,
+      autoAdvanceTime: true,
+      particleDensity: 80,
+      activeLoopFilter: 'ALL',
+      showHeatmap: false,
+      hoveredNode: null,
+      selectedNode: null,
+      selectedConnection: null,
+      hoveredConnection: null,
+      draggedNode: null,
+      isConnectMode: false,
+      connectStartNode: null,
+      mouseWorldPos: { x: 0, y: 0 }
+    };
+
+    // --- COLOR RESOLUTION HELPERS ---
+    function getNodeEffectiveColor(node) {
+      if (!node) return '#0284c7';
+      if (node.color) return node.color;
+      const cat = categories[node.category];
+      return cat ? cat.color : '#0284c7';
+    }
+
+    function getConnectionEffectiveColor(conn) {
+      if (!conn) return '#64748b';
+      if (conn.color) return conn.color;
+      if (conn.category && categories[conn.category]) return categories[conn.category].color;
+      const fromN = nodes.find(n => n.id === conn.from);
+      if (fromN) return getNodeEffectiveColor(fromN);
+      return '#64748b';
+    }
+
+    // --- LEGEND & CATEGORY MANAGEMENT ---
+    let activeEditCategoryKey = null;
+
+    function renderCategoryLegend() {
+      const container = document.getElementById('legend-categories-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      Object.keys(categories).forEach(catKey => {
+        const cat = categories[catKey];
+        const item = document.createElement('div');
+        item.className = 'flex items-center justify-between p-1 rounded-lg hover:bg-slate-100 cursor-pointer transition-colors group';
+        item.innerHTML = `
+          <div class="flex items-center space-x-1.5 min-w-0">
+            <span class="w-3 h-3 rounded-full shrink-0 border border-slate-300" style="background-color: ${cat.color}"></span>
+            <span class="text-[11px] font-semibold text-slate-700 truncate" title="${cat.name}">${cat.name}</span>
+          </div>
+          <i class="fa-solid fa-pen text-[9px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+        `;
+        item.addEventListener('click', () => openCategoryModal(catKey));
+        container.appendChild(item);
+      });
+    }
+
+    function openCategoryModal(catKey) {
+      activeEditCategoryKey = catKey;
+      const modal = document.getElementById('modal-edit-category');
+      const cat = categories[catKey];
+      if (!modal || !cat) return;
+
+      document.getElementById('input-cat-name').value = cat.name;
+      document.getElementById('input-cat-color').value = cat.color;
+      document.getElementById('input-cat-hex').value = cat.color;
+      document.getElementById('input-cat-desc').value = cat.desc || '';
+
+      const deleteBtn = document.getElementById('btn-delete-cat-modal');
+      const coreKeys = ['office', 'commercial', 'shared'];
+      if (deleteBtn) {
+        if (coreKeys.includes(catKey) || Object.keys(categories).length <= 1) {
+          deleteBtn.classList.add('hidden');
+        } else {
+          deleteBtn.classList.remove('hidden');
+        }
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeCategoryModal() {
+      document.getElementById('modal-edit-category')?.classList.add('hidden');
+      activeEditCategoryKey = null;
+    }
+
+    document.getElementById('btn-close-cat-modal')?.addEventListener('click', closeCategoryModal);
+    document.getElementById('btn-cancel-cat-modal')?.addEventListener('click', closeCategoryModal);
+
+    document.getElementById('input-cat-color')?.addEventListener('input', (e) => {
+      document.getElementById('input-cat-hex').value = e.target.value;
+    });
+
+    document.getElementById('input-cat-hex')?.addEventListener('input', (e) => {
+      const val = e.target.value;
+      if (/^#[0-9A-F]{6}$/i.test(val)) {
+        document.getElementById('input-cat-color').value = val;
+      }
+    });
+
+    document.getElementById('btn-save-cat-modal')?.addEventListener('click', () => {
+      if (!activeEditCategoryKey || !categories[activeEditCategoryKey]) return;
+      saveHistoryState();
+
+      const cat = categories[activeEditCategoryKey];
+      cat.name = document.getElementById('input-cat-name').value.trim() || cat.name;
+      cat.color = document.getElementById('input-cat-color').value;
+      cat.desc = document.getElementById('input-cat-desc').value.trim();
+
+      renderCategoryLegend();
+      syncAllParticleColors();
+      closeCategoryModal();
+    });
+
+    // Delete Classification handler
+    document.getElementById('btn-delete-cat-modal')?.addEventListener('click', () => {
+      if (!activeEditCategoryKey || !categories[activeEditCategoryKey]) return;
+      const keyToDelete = activeEditCategoryKey;
+
+      saveHistoryState();
+
+      // Fallback category for assigned items
+      const fallbackKey = Object.keys(categories).find(k => k !== keyToDelete) || 'shared';
+
+      // Reassign nodes using this category
+      nodes.forEach(node => {
+        if (node.category === keyToDelete) {
+          node.category = fallbackKey;
+          node.typeLabel = categories[fallbackKey]?.name || 'Spatial Node';
+          if (!node.customColor) {
+            node.color = categories[fallbackKey]?.color || '#0284c7';
+          }
+        }
+      });
+
+      // Reassign connections using this category
+      connections.forEach(conn => {
+        if (conn.category === keyToDelete) {
+          conn.category = fallbackKey;
+          if (!conn.customColor) {
+            conn.color = categories[fallbackKey]?.color || '';
+          }
+        }
+      });
+
+      delete categories[keyToDelete];
+
+      renderCategoryLegend();
+      syncAllParticleColors();
+      closeCategoryModal();
+
+      if (simState.selectedNode) updateInspectorPanel(simState.selectedNode);
+      if (simState.selectedConnection) updateConnectionInspector(simState.selectedConnection);
+    });
+
+    document.getElementById('btn-add-category')?.addEventListener('click', () => {
+      saveHistoryState();
+      const newKey = 'custom_' + Date.now();
+      categories[newKey] = {
+        name: 'New Zone Category',
+        color: '#0284c7',
+        bg: '#e0f2fe',
+        desc: 'Custom spatial category zone.'
+      };
+      renderCategoryLegend();
+      openCategoryModal(newKey);
+    });
+
+    // --- NODE INSPECTOR PANEL UPDATE ---
+    function updateInspectorPanel(node) {
+      const detailView = document.getElementById('view-node-detail') || createNodeDetailViewContainer();
+      const connView = document.getElementById('view-conn-detail');
+      const systemView = document.getElementById('view-system-overview');
+      const badge = document.getElementById('inspector-badge');
+      if (!detailView || !systemView || !badge) return;
+
+      if (connView) connView.classList.add('hidden');
+      systemView.classList.add('hidden');
+      detailView.classList.remove('hidden');
+      badge.innerText = 'Node Inspector';
+
+      const liveOcc = getNodeOccupancy(node, simState.timeOfDay);
+      const currentUsers = Math.round(node.maxCapacity * (liveOcc / 100));
+      const currentColor = getNodeEffectiveColor(node);
+
+      detailView.innerHTML = `
+        <div class="space-y-4">
+          <div class="p-3.5 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold" style="background-color: ${currentColor}">
+                  <i class="fa-solid ${node.icon || 'fa-building'} text-sm"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-xs text-slate-900">${node.title}</h3>
+                  <span class="text-[10px] text-slate-500 uppercase tracking-wider">${node.typeLabel || 'Spatial Node'}</span>
+                </div>
+              </div>
+              <button id="btn-close-node-detail" class="text-slate-400 hover:text-slate-600 p-1">
+                <i class="fa-solid fa-xmark text-sm"></i>
+              </button>
+            </div>
+
+            <div class="space-y-2.5 pt-2 border-t border-slate-100 text-xs">
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Node Title</label>
+                <input type="text" id="input-node-title" value="${node.title}" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Classification Category</label>
+                <select id="select-node-cat" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+                  ${Object.keys(categories).map(catKey => `
+                    <option value="${catKey}" ${node.category === catKey ? 'selected' : ''}>${categories[catKey].name}</option>
+                  `).join('')}
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Custom Color Accent</label>
+                <div class="flex items-center space-x-2">
+                  <input type="color" id="input-node-color" value="${currentColor}" class="w-8 h-8 rounded border border-slate-200 cursor-pointer p-0.5 bg-white">
+                  <button id="btn-reset-node-color" class="px-2 py-1 text-[11px] rounded bg-slate-100 hover:bg-slate-200 text-slate-700">Use Category Color</button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-slate-500 font-medium mb-1">Max Capacity</label>
+                  <input type="number" id="input-node-cap" value="${node.maxCapacity}" min="10" max="500" class="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+                </div>
+                <div>
+                  <label class="block text-slate-500 font-medium mb-1">Base Occupancy</label>
+                  <input type="number" id="input-node-base" value="${node.baseOccupancy || 50}" min="5" max="300" class="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">Live Occupancy</div>
+              <div id="inspector-live-occ" class="text-lg font-bold font-mono text-sky-700">${liveOcc}%</div>
+            </div>
+            <div class="p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">Active Users</div>
+              <div id="inspector-active-users" class="text-lg font-bold font-mono text-slate-800">${currentUsers} / ${node.maxCapacity}</div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-white border border-slate-200 rounded-xl space-y-2 shadow-sm">
+            <div class="text-xs font-semibold text-slate-700">Capacity Load Indicator</div>
+            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+              <div id="inspector-load-bar" class="h-full rounded-full transition-all duration-300" style="width: ${liveOcc}%; background-color: ${currentColor}"></div>
+            </div>
+          </div>
+
+          <button id="btn-delete-node" class="w-full px-3 py-2 rounded-xl text-xs font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-trash-can"></i> Remove Node & Connected Lines
+          </button>
+        </div>
+      `;
+
+      document.getElementById('btn-close-node-detail')?.addEventListener('click', () => {
+        simState.selectedNode = null;
+        showSystemOverview();
+      });
+
+      document.getElementById('btn-delete-node')?.addEventListener('click', () => {
+        deleteNode(node);
+      });
+
+      document.getElementById('input-node-title')?.addEventListener('input', (e) => {
+        node.title = e.target.value.trim() || 'Node';
+        autoSaveQuietly();
+      });
+
+      document.getElementById('input-node-title')?.addEventListener('change', () => {
+        saveHistoryState();
+      });
+
+      document.getElementById('input-node-color')?.addEventListener('input', (e) => {
+        node.color = e.target.value;
+        node.customColor = true;
+        const loadBar = document.getElementById('inspector-load-bar');
+        if (loadBar) loadBar.style.backgroundColor = node.color;
+        syncAllParticleColors();
+        autoSaveQuietly();
+      });
+
+      document.getElementById('input-node-color')?.addEventListener('change', () => {
+        saveHistoryState();
+      });
+
+      document.getElementById('btn-reset-node-color')?.addEventListener('click', () => {
+        saveHistoryState();
+        node.customColor = false;
+        node.color = categories[node.category]?.color || '#0284c7';
+        syncAllParticleColors();
+        updateInspectorPanel(node);
+        autoSaveQuietly();
+      });
+
+      document.getElementById('select-node-cat')?.addEventListener('change', (e) => {
+        saveHistoryState();
+        node.category = e.target.value;
+        const catConfig = categories[node.category] || { name: 'Custom Zone', color: '#0284c7' };
+        node.typeLabel = catConfig.name;
+        if (!node.customColor) {
+          node.color = catConfig.color;
+        }
+        syncAllParticleColors();
+        updateInspectorPanel(node);
+        autoSaveQuietly();
+      });
+
+      document.getElementById('input-node-cap')?.addEventListener('input', (e) => {
+        node.maxCapacity = Math.max(10, parseInt(e.target.value) || 100);
+        refreshInspectorOccupancyMetrics(node);
+        autoSaveQuietly();
+      });
+
+      document.getElementById('input-node-cap')?.addEventListener('change', () => {
+        saveHistoryState();
+      });
+
+      document.getElementById('input-node-base')?.addEventListener('input', (e) => {
+        node.baseOccupancy = Math.max(5, parseInt(e.target.value) || 50);
+        refreshInspectorOccupancyMetrics(node);
+        autoSaveQuietly();
+      });
+
+      document.getElementById('input-node-base')?.addEventListener('change', () => {
+        saveHistoryState();
+      });
+    }
+
+    function createNodeDetailViewContainer() {
+      const parent = document.getElementById('inspector-content');
+      if (!parent) return null;
+      let el = document.getElementById('view-node-detail');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'view-node-detail';
+        el.className = 'hidden space-y-4';
+        parent.appendChild(el);
+      }
+      return el;
+    }
+
+    // --- UNDO / REDO HISTORY ENGINE ---
+    const undoStack = [];
+    const redoStack = [];
+
+    function saveHistoryState() {
+      const stateSnapshot = {
+        nodes: JSON.parse(JSON.stringify(nodes)),
+        connections: JSON.parse(JSON.stringify(connections)),
+        categories: JSON.parse(JSON.stringify(categories)),
+        loopTitles: JSON.parse(JSON.stringify(loopTitles)),
+        loopDescs: JSON.parse(JSON.stringify(loopDescs)),
+        loopColors: JSON.parse(JSON.stringify(loopColors)),
+        loopCapacities: JSON.parse(JSON.stringify(loopCapacities))
+      };
+      undoStack.push(stateSnapshot);
+      if (undoStack.length > 30) undoStack.shift();
+      redoStack.length = 0; // Clear redo history on new action
+      updateUndoRedoButtons();
+      autoSaveQuietly();
+    }
+
+    function undo() {
+      if (undoStack.length === 0) return;
+      const currentState = {
+        nodes: JSON.parse(JSON.stringify(nodes)),
+        connections: JSON.parse(JSON.stringify(connections)),
+        categories: JSON.parse(JSON.stringify(categories)),
+        loopTitles: JSON.parse(JSON.stringify(loopTitles)),
+        loopDescs: JSON.parse(JSON.stringify(loopDescs)),
+        loopColors: JSON.parse(JSON.stringify(loopColors)),
+        loopCapacities: JSON.parse(JSON.stringify(loopCapacities))
+      };
+      redoStack.push(currentState);
+
+      const previousState = undoStack.pop();
+      restoreState(previousState);
+      updateUndoRedoButtons();
+      autoSaveQuietly();
+    }
+
+    function redo() {
+      if (redoStack.length === 0) return;
+      const currentState = {
+        nodes: JSON.parse(JSON.stringify(nodes)),
+        connections: JSON.parse(JSON.stringify(connections)),
+        categories: JSON.parse(JSON.stringify(categories)),
+        loopTitles: JSON.parse(JSON.stringify(loopTitles)),
+        loopDescs: JSON.parse(JSON.stringify(loopDescs)),
+        loopColors: JSON.parse(JSON.stringify(loopColors)),
+        loopCapacities: JSON.parse(JSON.stringify(loopCapacities))
+      };
+      undoStack.push(currentState);
+
+      const nextState = redoStack.pop();
+      restoreState(nextState);
+      updateUndoRedoButtons();
+      autoSaveQuietly();
+    }
+
+    function restoreState(state) {
+      nodes.length = 0;
+      state.nodes.forEach(n => nodes.push(n));
+      
+      connections.length = 0;
+      state.connections.forEach(c => connections.push(c));
+
+      Object.keys(categories).forEach(k => delete categories[k]);
+      Object.assign(categories, state.categories);
+
+      if (state.loopTitles) {
+        Object.keys(loopTitles).forEach(k => delete loopTitles[k]);
+        Object.assign(loopTitles, state.loopTitles);
+      }
+      if (state.loopDescs) {
+        Object.keys(loopDescs).forEach(k => delete loopDescs[k]);
+        Object.assign(loopDescs, state.loopDescs);
+      }
+      if (state.loopColors) {
+        Object.keys(loopColors).forEach(k => delete loopColors[k]);
+        Object.assign(loopColors, state.loopColors);
+      }
+      if (state.loopCapacities) {
+        Object.keys(loopCapacities).forEach(k => delete loopCapacities[k]);
+        Object.assign(loopCapacities, state.loopCapacities);
+      }
+
+      simState.selectedNode = null;
+      simState.selectedConnection = null;
+      renderCategoryLegend();
+      renderLoopFilterButtons();
+      initParticles();
+      showSystemOverview();
+    }
+
+    function updateUndoRedoButtons() {
+      const undoBtn = document.getElementById('btn-undo');
+      const redoBtn = document.getElementById('btn-redo');
+      if (undoBtn) undoBtn.disabled = undoStack.length === 0;
+      if (redoBtn) redoBtn.disabled = redoStack.length === 0;
+    }
+
+    document.getElementById('btn-undo')?.addEventListener('click', undo);
+    document.getElementById('btn-redo')?.addEventListener('click', redo);
+
+    window.addEventListener('keydown', (e) => {
+      // Ignore copy/paste inside input fields or textareas
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey;
+
+      if (e.key.toLowerCase() === 'p' && !cmdOrCtrl && !e.altKey && !e.shiftKey) {
+        e.preventDefault();
+        const connectBtn = document.getElementById('btn-toggle-connect-mode');
+        if (connectBtn) {
+          connectBtn.click();
+        }
+        return;
+      }
+
+      if (e.key.toLowerCase() === 'v' && !cmdOrCtrl && !e.altKey && !e.shiftKey) {
+        e.preventDefault();
+        if (simState.isConnectMode) {
+          const connectBtn = document.getElementById('btn-toggle-connect-mode');
+          if (connectBtn) {
+            connectBtn.click();
+          }
+        }
+        return;
+      }
+
+      if (cmdOrCtrl && e.key.toLowerCase() === 'z') {
+        if (e.shiftKey) redo();
+        else undo();
+      } else if (cmdOrCtrl && e.key.toLowerCase() === 'y') {
+        redo();
+      } else if (cmdOrCtrl && e.key.toLowerCase() === 'c') {
+        // --- COPY (Ctrl+C / Cmd+C) ---
+        if (simState.selectedNode) {
+          copiedNodesClipboard = [JSON.parse(JSON.stringify(simState.selectedNode))];
+        }
+      } else if (cmdOrCtrl && e.key.toLowerCase() === 'v') {
+        // --- PASTE (Ctrl+V / Cmd+V) ---
+        if (copiedNodesClipboard.length > 0) {
+          saveHistoryState();
+          const pasteCenter = simState.mouseWorldPos || { x: width / 2, y: height / 2 };
+
+          // Calculate centroid of copied nodes
+          const avgX = copiedNodesClipboard.reduce((sum, n) => sum + n.x, 0) / copiedNodesClipboard.length;
+          const avgY = copiedNodesClipboard.reduce((sum, n) => sum + n.y, 0) / copiedNodesClipboard.length;
+
+          let lastPastedNode = null;
+          copiedNodesClipboard.forEach((nodeCopy) => {
+            const offsetX = nodeCopy.x - avgX;
+            const offsetY = nodeCopy.y - avgY;
+
+            const pastedNode = {
+              ...JSON.parse(JSON.stringify(nodeCopy)),
+              id: 'n_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+              title: `${nodeCopy.title} (Copy)`,
+              x: pasteCenter.x + offsetX + (Math.random() * 20 - 10),
+              y: pasteCenter.y + offsetY + (Math.random() * 20 - 10)
+            };
+
+            nodes.push(pastedNode);
+            lastPastedNode = pastedNode;
+
+            // Connect pasted node to the original source node if it exists
+            const originalNode = nodes.find(n => n.id === nodeCopy.id);
+            if (originalNode) {
+              const pasteConn = {
+                id: 'c_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+                from: originalNode.id,
+                to: pastedNode.id,
+                loop: simState.activeLoopFilter !== 'ALL' ? simState.activeLoopFilter : 'OFFICE_WORK',
+                density: 1.5,
+                curveOffset: 0.25,
+                style: 'solid',
+                showArrow: true,
+                category: pastedNode.category
+              };
+              connections.push(pasteConn);
+            }
+          });
+
+          if (lastPastedNode) {
+            simState.selectedNode = lastPastedNode;
+            simState.selectedConnection = null;
+            updateInspectorPanel(lastPastedNode);
+          }
+
+          initParticles();
+        }
+      } else if ((e.key === 'Delete' || e.key === 'Backspace') && simState.selectedConnection) {
+        deleteSelectedConnection();
+      }
+    });
+
+    const loopTitles = {
+      'ALL': 'All Active Spatial Loops',
+      'OFFICE_INOUT': 'Office Ingress / Egress Loop',
+      'OFFICE_WORK': 'Office Productivity & Collaboration',
+      'GRAB_GO': 'Morning Express Coffee & Grab & Go',
+      'SOCIAL_DINING': 'Midday Dining & Social Loop',
+      'BROWSING': 'Retail Shopping & Leisure',
+      'LEISURE': 'Entertainment & Outdoor Alfresco',
+      'OPERATIONS': 'Back-of-House Logistics'
+    };
+
+    const loopDescs = {
+      'ALL': 'Displaying full interconnected user flows between Office Workstations, Commercial Retail/Dining, and Shared Elevators/Lobby spaces.',
+      'OFFICE_INOUT': 'Primary morning arrival and evening departure corridors connecting Transit Gates to Office Reception and Vertical Cores.',
+      'OFFICE_WORK': 'Internal circulation between workstations, agile huddle pods, and executive boardrooms.',
+      'GRAB_GO': 'High-velocity morning rush loop connecting entry portals to Express Cafe and quick breakfast stations.',
+      'SOCIAL_DINING': 'Peak midday lunch rush interconnecting office elevator cores with the Central Food Court and Alfresco Plaza.',
+      'BROWSING': 'Retail shopping circulation connecting ground floor storefronts to food and entertainment zones.',
+      'LEISURE': 'Evening social pathways connecting cinema, lounge, and outdoor dining terraces.',
+      'OPERATIONS': 'Restricted back-of-house loading dock logistics and vendor delivery routes.'
+    };
+
+    const loopColors = {
+      'OFFICE_INOUT': '#0284c7',
+      'OFFICE_WORK': '#2563eb',
+      'GRAB_GO': '#d97706',
+      'SOCIAL_DINING': '#f59e0b',
+      'BROWSING': '#db2777',
+      'LEISURE': '#9333ea',
+      'OPERATIONS': '#059669'
+    };
+
+    const loopCapacities = {
+      'OFFICE_INOUT': 450,
+      'OFFICE_WORK': 300,
+      'GRAB_GO': 250,
+      'SOCIAL_DINING': 500,
+      'BROWSING': 350,
+      'LEISURE': 400,
+      'OPERATIONS': 200
+    };
+
+    function renderLoopFilterButtons() {
+      const container = document.getElementById('loop-buttons-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const allBtn = document.createElement('button');
+      allBtn.dataset.loop = 'ALL';
+      allBtn.className = `loop-filter-btn glass-btn text-[11px] px-2 py-1 rounded-lg shrink-0 ${simState.activeLoopFilter === 'ALL' ? 'active' : ''}`;
+      allBtn.innerText = 'All';
+      allBtn.addEventListener('click', () => selectLoopFilter('ALL'));
+      container.appendChild(allBtn);
+
+      Object.keys(loopTitles).forEach(loopKey => {
+        if (loopKey === 'ALL') return;
+        const btn = document.createElement('button');
+        btn.dataset.loop = loopKey;
+        btn.className = `loop-filter-btn glass-btn text-[11px] px-2 py-1 rounded-lg shrink-0 ${simState.activeLoopFilter === loopKey ? 'active' : ''}`;
+        btn.innerText = loopTitles[loopKey];
+        btn.addEventListener('click', () => selectLoopFilter(loopKey));
+        container.appendChild(btn);
+      });
+    }
+
+    function selectLoopFilter(loopKey) {
+      simState.activeLoopFilter = loopKey;
+      renderLoopFilterButtons();
+
+      const titleEl = document.getElementById('active-loop-title');
+      const descEl = document.getElementById('active-loop-desc');
+      if (titleEl) titleEl.innerText = loopTitles[loopKey] || 'Loop Details';
+      if (descEl) descEl.innerText = loopDescs[loopKey] || 'Custom filtered spatial pathways.';
+
+      initParticles();
+    }
+
+    function openLoopManagerModal() {
+      const modal = document.getElementById('modal-manage-loops');
+      const listContainer = document.getElementById('loop-list-container');
+      if (!modal || !listContainer) return;
+
+      listContainer.innerHTML = '';
+      Object.keys(loopTitles).forEach(loopKey => {
+        if (loopKey === 'ALL') return;
+        const color = loopColors[loopKey] || '#0284c7';
+        const capacity = loopCapacities[loopKey] || 300;
+
+        const row = document.createElement('div');
+        row.className = 'p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs';
+        row.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2 flex-1">
+              <input type="color" data-color-loop="${loopKey}" value="${color}" class="w-5 h-5 rounded border-0 cursor-pointer p-0 bg-transparent shrink-0">
+              <input type="text" data-title-loop="${loopKey}" value="${loopTitles[loopKey]}" class="w-full px-2 py-1 bg-white border border-slate-200 rounded font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+            </div>
+            <button data-delete-loop="${loopKey}" class="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-semibold border border-rose-200 flex items-center gap-1 transition-colors shrink-0" title="Delete loop">
+              <i class="fa-solid fa-trash-can text-[10px]"></i> Delete
+            </button>
+          </div>
+          <input type="text" data-desc-loop="${loopKey}" value="${loopDescs[loopKey] || ''}" placeholder="Pathway description..." class="w-full px-2 py-1 bg-white border border-slate-200 rounded text-[11px] text-slate-600 focus:ring-1 focus:ring-sky-500">
+          <div class="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[11px]">
+            <span class="text-slate-500 font-medium"><i class="fa-solid fa-gauge-high text-sky-600 mr-1"></i>Max Flow Capacity:</span>
+            <div class="flex items-center space-x-1">
+              <input type="number" data-capacity-loop="${loopKey}" value="${capacity}" min="50" max="2000" step="25" class="w-20 px-2 py-0.5 bg-white border border-slate-200 rounded text-right font-mono font-bold text-slate-800 focus:ring-1 focus:ring-sky-500">
+              <span class="text-slate-400 text-[10px]">users/hr</span>
+            </div>
+          </div>
+        `;
+        listContainer.appendChild(row);
+      });
+
+      // Bind dynamic loop title changes
+      listContainer.querySelectorAll('[data-title-loop]').forEach(input => {
+        input.addEventListener('input', (e) => {
+          const key = e.target.getAttribute('data-title-loop');
+          if (key && e.target.value.trim()) {
+            loopTitles[key] = e.target.value.trim();
+            renderLoopFilterButtons();
+            if (simState.selectedConnection && simState.selectedConnection.loop === key) {
+              updateConnectionInspector(simState.selectedConnection);
+            }
+            autoSaveQuietly();
+          }
+        });
+        input.addEventListener('change', () => {
+          saveHistoryState();
+        });
+      });
+
+      // Bind dynamic loop description changes
+      listContainer.querySelectorAll('[data-desc-loop]').forEach(input => {
+        input.addEventListener('input', (e) => {
+          const key = e.target.getAttribute('data-desc-loop');
+          if (key) {
+            loopDescs[key] = e.target.value.trim();
+            if (simState.activeLoopFilter === key) {
+              const descEl = document.getElementById('active-loop-desc');
+              if (descEl) descEl.innerText = loopDescs[key];
+            }
+            autoSaveQuietly();
+          }
+        });
+        input.addEventListener('change', () => {
+          saveHistoryState();
+        });
+      });
+
+      // Bind dynamic loop color picker changes
+      listContainer.querySelectorAll('[data-color-loop]').forEach(input => {
+        input.addEventListener('input', (e) => {
+          const key = e.target.getAttribute('data-color-loop');
+          if (key) {
+            loopColors[key] = e.target.value;
+            syncAllParticleColors();
+            initParticles();
+            if (simState.selectedConnection && simState.selectedConnection.loop === key) {
+              updateConnectionInspector(simState.selectedConnection);
+            }
+            autoSaveQuietly();
+          }
+        });
+        input.addEventListener('change', () => {
+          saveHistoryState();
+        });
+      });
+
+      // Bind dynamic loop capacity input changes
+      listContainer.querySelectorAll('[data-capacity-loop]').forEach(input => {
+        input.addEventListener('input', (e) => {
+          const key = e.target.getAttribute('data-capacity-loop');
+          if (key) {
+            const cap = Math.max(50, parseInt(e.target.value) || 300);
+            loopCapacities[key] = cap;
+            if (simState.selectedConnection && simState.selectedConnection.loop === key) {
+              updateConnectionInspector(simState.selectedConnection);
+            }
+            autoSaveQuietly();
+          }
+        });
+        input.addEventListener('change', () => {
+          saveHistoryState();
+        });
+      });
+
+      // Bind delete handlers with connection safety re-assignment
+      listContainer.querySelectorAll('[data-delete-loop]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const targetKey = e.currentTarget.getAttribute('data-delete-loop');
+          if (targetKey) {
+            saveHistoryState();
+
+            // Find an alternative fallback loop key
+            const remainingKeys = Object.keys(loopTitles).filter(k => k !== 'ALL' && k !== targetKey);
+            const fallbackKey = remainingKeys.length > 0 ? remainingKeys[0] : 'OFFICE_WORK';
+
+            // Reassign any connections using this loop back to the fallback loop
+            connections.forEach(conn => {
+              if (conn.loop === targetKey) {
+                conn.loop = fallbackKey;
+              }
+            });
+
+            delete loopTitles[targetKey];
+            delete loopDescs[targetKey];
+            delete loopColors[targetKey];
+            delete loopCapacities[targetKey];
+
+            if (simState.activeLoopFilter === targetKey) {
+              simState.activeLoopFilter = 'ALL';
+            }
+
+            renderLoopFilterButtons();
+            openLoopManagerModal();
+            initParticles();
+            if (simState.selectedConnection) {
+              updateConnectionInspector(simState.selectedConnection);
+            }
+          }
+        });
+      });
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeLoopManagerModal() {
+      document.getElementById('modal-manage-loops')?.classList.add('hidden');
+    }
+
+    document.getElementById('btn-open-loop-manager')?.addEventListener('click', openLoopManagerModal);
+    document.getElementById('btn-close-loop-modal')?.addEventListener('click', closeLoopManagerModal);
+
+    document.getElementById('btn-create-loop')?.addEventListener('click', () => {
+      const rawKey = document.getElementById('input-new-loop-key').value.trim().toUpperCase().replace(/[^A-Z0-9_]/g, '_');
+      const title = document.getElementById('input-new-loop-title').value.trim();
+      const color = document.getElementById('input-new-loop-color').value;
+      const desc = document.getElementById('input-new-loop-desc').value.trim();
+      const capacity = Math.max(50, parseInt(document.getElementById('input-new-loop-capacity').value) || 300);
+
+      if (rawKey && title) {
+        saveHistoryState();
+        loopTitles[rawKey] = title;
+        loopDescs[rawKey] = desc || 'Custom loop spatial pathway flow.';
+        loopColors[rawKey] = color;
+        loopCapacities[rawKey] = capacity;
+
+        document.getElementById('input-new-loop-key').value = '';
+        document.getElementById('input-new-loop-title').value = '';
+        document.getElementById('input-new-loop-desc').value = '';
+        document.getElementById('input-new-loop-capacity').value = '300';
+
+        renderLoopFilterButtons();
+        openLoopManagerModal();
+        initParticles();
+      }
+    });
+
+    // Particle Color Evaluator with loop fallbacks
+    class Particle {
+      constructor(conn) {
+        this.connection = conn;
+        this.progress = Math.random();
+        this.speed = (0.002 + Math.random() * 0.0025) * conn.density;
+        this.size = 2.5 + Math.random() * 2;
+        this.color = this.calculateColor();
+      }
+
+      calculateColor() {
+        if (this.connection.color) return this.connection.color;
+        const fromN = nodes.find(n => n.id === this.connection.from);
+        if (fromN) {
+          if (fromN.color) return fromN.color;
+          const cat = categories[fromN.category];
+          if (cat) return cat.color;
+        }
+        return this.getLoopColor(this.connection.loop);
+      }
+
+      getLoopColor(loop) {
+        if (loopColors[loop]) return loopColors[loop];
+        switch(loop) {
+          case 'OFFICE_INOUT': return '#0284c7';
+          case 'OFFICE_WORK': return '#2563eb';
+          case 'GRAB_GO': return '#d97706';
+          case 'SOCIAL_DINING': return '#f59e0b';
+          case 'BROWSING': return '#db2777';
+          case 'LEISURE': return '#9333ea';
+          case 'OPERATIONS': return '#059669';
+          default: return '#0284c7';
+        }
+      }
+
+      update(simSpeed, timeOfDay) {
+        // Dynamically update particle color to match current node/connection color changes
+        this.color = this.calculateColor();
+        const timeMult = getTimeUserVolumeMultiplier(timeOfDay);
+        this.progress += this.speed * simSpeed * (0.8 + timeMult * 0.5);
+        if (this.progress >= 1) {
+          this.progress = 0;
+        }
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      const densitySetting = simState.particleDensity;
+      connections.forEach(conn => {
+        if (simState.activeLoopFilter === 'ALL' || conn.loop === simState.activeLoopFilter) {
+          const count = Math.round(12 * conn.density * (densitySetting / 80));
+          for (let i = 0; i < count; i++) {
+            particles.push(new Particle(conn));
+          }
+        }
+      });
+    }
+
+    // Helper to refresh all particle colors immediately when node or category colors change
+    function syncAllParticleColors() {
+      particles.forEach(p => {
+        p.color = p.calculateColor();
+      });
+    }
+
+    // --- TIME-OF-DAY ENGINE & CALCULATIONS ---
+    function getTimeUserVolumeMultiplier(time) {
+      // Peak morning rush (8-9.5am), peak lunch (12-1.5pm), peak evening (5.5-7.5pm)
+      if (time >= 8 && time <= 9.5) return 1.8;
+      if (time >= 12 && time <= 13.5) return 2.0;
+      if (time >= 17.5 && time <= 19.5) return 1.6;
+      if (time < 7 || time > 21) return 0.3;
+      return 1.0;
+    }
+
+    function updateTimeOfDay(dt) {
+      if (simState.autoAdvanceTime) {
+        simState.timeOfDay += (dt / 1000) * 0.25 * simState.speed;
+        if (simState.timeOfDay > 22) simState.timeOfDay = 6;
+        
+        const slider = document.getElementById('slider-time');
+        if (slider) slider.value = simState.timeOfDay;
+      }
+
+      const clock = document.getElementById('clock-display');
+      const phase = document.getElementById('time-phase-label');
+      const timeIcon = document.getElementById('time-icon');
+      
+      const hours = Math.floor(simState.timeOfDay);
+      const minutes = Math.floor((simState.timeOfDay - hours) * 60);
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const displayHours = hours % 12 === 0 ? 12 : hours % 12;
+      const timeStr = `${displayHours}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
+
+      if (clock) clock.innerText = timeStr;
+
+      if (phase && timeIcon) {
+        if (hours >= 7 && hours < 10) {
+          phase.innerText = 'Morning Rush';
+          timeIcon.className = 'fa-solid fa-sun-plant-wilt text-amber-500';
+        } else if (hours >= 10 && hours < 11.5) {
+          phase.innerText = 'Mid-Morning Focus';
+          timeIcon.className = 'fa-solid fa-sun text-amber-500';
+        } else if (hours >= 11.5 && hours < 14) {
+          phase.innerText = 'Midday Peak Lunch';
+          timeIcon.className = 'fa-solid fa-utensils text-amber-600';
+        } else if (hours >= 14 && hours < 17) {
+          phase.innerText = 'Afternoon Focus & Meetings';
+          timeIcon.className = 'fa-solid fa-briefcase text-sky-600';
+        } else if (hours >= 17 && hours < 20) {
+          phase.innerText = 'Evening Social & Egress';
+          timeIcon.className = 'fa-solid fa-moon text-indigo-500';
+        } else {
+          phase.innerText = 'Night Low Activity';
+          timeIcon.className = 'fa-solid fa-moon-stars text-slate-400';
+        }
+      }
+    }
+
+    function getNodeOccupancy(node, time) {
+      let multiplier = getTimeUserVolumeMultiplier(time);
+      if (node.category === 'office') {
+        if (time >= 8 && time <= 17) multiplier *= 1.25;
+        else multiplier *= 0.2;
+      } else if (node.category === 'commercial') {
+        if (time >= 11.5 && time <= 14) multiplier *= 1.6;
+        else if (time >= 17 && time <= 21) multiplier *= 1.4;
+      }
+      
+      const occ = Math.round((node.baseOccupancy / node.maxCapacity) * 100 * multiplier);
+      return Math.min(100, Math.max(5, occ));
+    }
+
+    function screenToWorld(sx, sy) {
+      return {
+        x: (sx - transform.x) / transform.scale,
+        y: (sy - transform.y) / transform.scale
+      };
+    }
+
+    function worldToScreen(wx, wy) {
+      return {
+        x: wx * transform.scale + transform.x,
+        y: wy * transform.scale + transform.y
+      };
+    }
+
+    function getCurvePoints(fromNode, toNode, offsetFactor = 0.25) {
+      const p1 = { x: fromNode.x, y: fromNode.y };
+      const p2 = { x: toNode.x, y: toNode.y };
+      const dx = p2.x - p1.x;
+      const dy = p2.y - p1.y;
+      const dist = Math.hypot(dx, dy);
+
+      const mx = (p1.x + p2.x) / 2;
+      const my = (p1.y + p2.y) / 2;
+
+      // Normal vector
+      const nx = -dy / dist;
+      const ny = dx / dist;
+
+      const cp = {
+        x: mx + nx * dist * offsetFactor,
+        y: my + ny * dist * offsetFactor
+      };
+
+      return { p1, cp, p2 };
+    }
+
+    function getPointOnBezier(p1, cp, p2, t) {
+      const u = 1 - t;
+      const tt = t * t;
+      const uu = u * u;
+      return {
+        x: uu * p1.x + 2 * u * t * cp.x + tt * p2.x,
+        y: uu * p1.y + 2 * u * t * cp.y + tt * p2.y
+      };
+    }
+
+    function distanceToSegment(p, p1, p2) {
+      const l2 = (p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2;
+      if (l2 === 0) return Math.hypot(p.x - p1.x, p.y - p1.y);
+      let t = ((p.x - p1.x) * (p2.x - p1.x) + (p.y - p1.y) * (p2.y - p1.y)) / l2;
+      t = Math.max(0, Math.min(1, t));
+      return Math.hypot(p.x - (p1.x + t * (p2.x - p1.x)), p.y - (p1.y + t * (p2.y - p1.y)));
+    }
+
+    function distanceToQuadraticBezier(p, p1, cp, p2, samples = 24) {
+      let minDist = Infinity;
+      let prevPt = p1;
+      for (let i = 1; i <= samples; i++) {
+        const t = i / samples;
+        const currPt = getPointOnBezier(p1, cp, p2, t);
+        const d = distanceToSegment(p, prevPt, currPt);
+        if (d < minDist) minDist = d;
+        prevPt = currPt;
+      }
+      return minDist;
+    }
+
+    function deleteSelectedConnection() {
+      if (!simState.selectedConnection) return;
+      saveHistoryState();
+      const idx = connections.findIndex(c => c.id === simState.selectedConnection.id);
+      if (idx !== -1) {
+        connections.splice(idx, 1);
+      }
+      simState.selectedConnection = null;
+      initParticles();
+      showSystemOverview();
+    }
+
+    function deleteNode(nodeToDelete) {
+      if (!nodeToDelete) return;
+      saveHistoryState();
+      
+      // Remove attached connections
+      for (let i = connections.length - 1; i >= 0; i--) {
+        if (connections[i].from === nodeToDelete.id || connections[i].to === nodeToDelete.id) {
+          connections.splice(i, 1);
+        }
+      }
+
+      // Remove node
+      const idx = nodes.findIndex(n => n.id === nodeToDelete.id);
+      if (idx !== -1) {
+        nodes.splice(idx, 1);
+      }
+
+      if (simState.selectedNode && simState.selectedNode.id === nodeToDelete.id) {
+        simState.selectedNode = null;
+      }
+      initParticles();
+      showSystemOverview();
+    }
+
+    function showSystemOverview() {
+      const detailView = document.getElementById('view-node-detail');
+      const connView = document.getElementById('view-conn-detail');
+      const systemView = document.getElementById('view-system-overview');
+      const badge = document.getElementById('inspector-badge');
+      if (detailView) detailView.classList.add('hidden');
+      if (connView) connView.classList.add('hidden');
+      if (systemView) systemView.classList.remove('hidden');
+      if (badge) badge.innerText = 'System Overview';
+    }
+
+    // --- CANVAS RENDER ENGINE ---
+    function drawGrid() {
+      if (!ctx) return;
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1 / transform.scale;
+
+      const gridSize = 50;
+      const worldTopLeft = screenToWorld(0, 0);
+      const worldBottomRight = screenToWorld(width, height);
+
+      const startX = Math.floor(worldTopLeft.x / gridSize) * gridSize;
+      const endX = Math.ceil(worldBottomRight.x / gridSize) * gridSize;
+      const startY = Math.floor(worldTopLeft.y / gridSize) * gridSize;
+      const endY = Math.ceil(worldBottomRight.y / gridSize) * gridSize;
+
+      ctx.beginPath();
+      for (let x = startX; x <= endX; x += gridSize) {
+        ctx.moveTo(x, startY);
+        ctx.lineTo(x, endY);
+      }
+      for (let y = startY; y <= endY; y += gridSize) {
+        ctx.moveTo(startX, y);
+        ctx.lineTo(endX, y);
+      }
+      ctx.stroke();
+    }
+
+    function drawHeatmap() {
+      if (!ctx || !simState.showHeatmap) return;
+      nodes.forEach(node => {
+        const occ = getNodeOccupancy(node, simState.timeOfDay);
+        const radius = node.radius * (1 + occ / 80) * 1.8;
+        const grad = ctx.createRadialGradient(node.x, node.y, 5, node.x, node.y, radius);
+        
+        let colorStr = 'rgba(2, 132, 199, 0.25)';
+        if (occ > 75) colorStr = 'rgba(225, 29, 72, 0.3)';
+        else if (occ > 45) colorStr = 'rgba(217, 119, 6, 0.25)';
+
+        grad.addColorStop(0, colorStr);
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    let lastTime = 0;
+    function render(currentTime) {
+      if (!lastTime) lastTime = currentTime;
+      const dt = currentTime - lastTime;
+      lastTime = currentTime;
+
+      updateTimeOfDay(dt);
+
+      if (!ctx) return;
+
+      // Clear Canvas Background
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.save();
+      // Apply Camera Pan/Zoom
+      ctx.translate(transform.x, transform.y);
+      ctx.scale(transform.scale, transform.scale);
+
+      // Render Grid & Heatmap
+      drawGrid();
+      drawHeatmap();
+
+      // Render Loop Connections & Paths
+      connections.forEach(conn => {
+        // Evaluate focus dimming: if a specific loop filter is active, non-matching loops dim instead of disappearing
+        const isFilterActive = simState.activeLoopFilter !== 'ALL';
+        const isFocusedLoop = conn.loop === simState.activeLoopFilter;
+        const isDimmedByFilter = isFilterActive && !isFocusedLoop;
+
+        const fromNode = nodes.find(n => n.id === conn.from);
+        const toNode = nodes.find(n => n.id === conn.to);
+        if (!fromNode || !toNode) return;
+        const fn = fromNode;
+        const tn = toNode;
+
+        const curve = getCurvePoints(fn, tn, conn.curveOffset !== undefined ? conn.curveOffset : 0.25);
+        const isSelected = simState.selectedConnection && simState.selectedConnection.id === conn.id;
+        const isHovered = simState.hoveredConnection && simState.hoveredConnection.id === conn.id;
+
+        // Resolve exact live line color dynamically (Line Override > Line Category > Source Node Category > Default)
+        const baseColor = getConnectionEffectiveColor(conn);
+        const loopCap = loopCapacities[conn.loop] || 300;
+        const timeMult = getTimeUserVolumeMultiplier(simState.timeOfDay);
+        const currentFlowRate = Math.round((conn.density || 1.0) * 100 * timeMult);
+        const loadRatio = currentFlowRate / loopCap;
+        const isOverloaded = loadRatio >= 1.0;
+
+        ctx.beginPath();
+        ctx.moveTo(curve.p1.x, curve.p1.y);
+        ctx.quadraticCurveTo(curve.cp.x, curve.cp.y, curve.p2.x, curve.p2.y);
+
+        ctx.lineWidth = isSelected ? 4 : (isHovered ? 3 : (isOverloaded ? 3.5 : 2));
+        ctx.strokeStyle = isSelected ? '#7c3aed' : (isOverloaded ? '#e11d48' : (isHovered ? '#0284c7' : baseColor));
+        
+        // Calculate dynamic line opacity: full contrast for active loop, subtle 0.12 opacity for non-active loops
+        const baseAlpha = isSelected ? 1.0 : (isHovered ? 0.9 : 0.45);
+        ctx.globalAlpha = isDimmedByFilter ? 0.12 : baseAlpha;
+
+        if (conn.style === 'dashed') {
+          ctx.setLineDash([8, 6]);
+        } else if (conn.style === 'dotted') {
+          ctx.setLineDash([3, 4]);
+        } else {
+          ctx.setLineDash([]);
+        }
+
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.globalAlpha = 1.0;
+
+        // Overload Warning Glow Effect on Canvas
+        if (isOverloaded && !isDimmedByFilter) {
+          ctx.save();
+          ctx.lineWidth = 8;
+          ctx.strokeStyle = '#f43f5e55';
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Direction Arrow with live synchronized color & Overload Badge
+        if (conn.showArrow !== false) {
+          const midPoint = getPointOnBezier(curve.p1, curve.cp, curve.p2, 0.55);
+          const nextPoint = getPointOnBezier(curve.p1, curve.cp, curve.p2, 0.57);
+          const angle = Math.atan2(nextPoint.y - midPoint.y, nextPoint.x - midPoint.x);
+
+          ctx.save();
+          ctx.globalAlpha = isDimmedByFilter ? 0.15 : 1.0;
+          ctx.translate(midPoint.x, midPoint.y);
+          ctx.rotate(angle);
+          ctx.fillStyle = isSelected ? '#7c3aed' : (isOverloaded ? '#e11d48' : baseColor);
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(-6, -4);
+          ctx.lineTo(-6, 4);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+
+          // Render Overload Badge text on Canvas
+          if (isOverloaded && !isDimmedByFilter) {
+            ctx.save();
+            ctx.font = '700 9px "JetBrains Mono", monospace';
+            ctx.fillStyle = '#e11d48';
+            ctx.textAlign = 'center';
+            ctx.fillText(`OVERLOAD: ${Math.round(loadRatio * 100)}%`, midPoint.x, midPoint.y - 12);
+            ctx.restore();
+          }
+        }
+      });
+
+      // Render Active Particles Moving Along Loops
+      if (simState.isPlaying) {
+        particles.forEach(p => {
+          p.update(simState.speed, simState.timeOfDay);
+          const fromNode = nodes.find(n => n.id === p.connection.from);
+          const toNode = nodes.find(n => n.id === p.connection.to);
+          if (fromNode && toNode) {
+            const isFilterActive = simState.activeLoopFilter !== 'ALL';
+            const isFocused = p.connection.loop === simState.activeLoopFilter;
+            const particleAlpha = isFilterActive ? (isFocused ? 1.0 : 0.08) : 1.0;
+
+            const curve = getCurvePoints(fromNode, toNode, p.connection.curveOffset !== undefined ? p.connection.curveOffset : 0.25);
+            const pt = getPointOnBezier(curve.p1, curve.cp, curve.p2, p.progress);
+
+            ctx.save();
+            ctx.globalAlpha = particleAlpha;
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(pt.x, pt.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Glow aura
+            ctx.fillStyle = p.color + '44';
+            ctx.beginPath();
+            ctx.arc(pt.x, pt.y, p.size * 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        });
+      }
+
+      // Render Custom Connecting Line Drag Preview
+      if (simState.isConnectMode && simState.connectStartNode) {
+        const startN = simState.connectStartNode;
+        ctx.beginPath();
+        ctx.moveTo(startN.x, startN.y);
+        ctx.lineTo(simState.mouseWorldPos.x, simState.mouseWorldPos.y);
+        ctx.strokeStyle = '#9333ea';
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([6, 6]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Render Spatial Nodes
+      nodes.forEach(node => {
+        const isSelected = (simState.selectedNode && simState.selectedNode.id === node.id) || selectedNodesArray.some(n => n.id === node.id);
+        const isHovered = simState.hoveredNode && simState.hoveredNode.id === node.id;
+        const liveOcc = getNodeOccupancy(node, simState.timeOfDay);
+
+        // Determine if node is connected to the currently focused loop filter
+        const isFilterActive = simState.activeLoopFilter !== 'ALL';
+        const isNodeInActiveLoop = !isFilterActive || connections.some(c => 
+          c.loop === simState.activeLoopFilter && (c.from === node.id || c.to === node.id)
+        );
+
+        ctx.save();
+        if (isFilterActive && !isNodeInActiveLoop) {
+          ctx.globalAlpha = 0.35; // Dim non-participating nodes when a loop filter is active
+        }
+
+        const catConfig = categories[node.category] || { color: '#0284c7' };
+        const nodeColor = node.color || catConfig.color;
+
+        // Outer Halo Ring
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius + (isSelected ? 8 : (isHovered ? 5 : 2)), 0, Math.PI * 2);
+        ctx.fillStyle = nodeColor + (isSelected ? '33' : (isHovered ? '22' : '11'));
+        ctx.fill();
+
+        ctx.lineWidth = isSelected ? 3 : (isHovered ? 2.5 : 1.5);
+        ctx.strokeStyle = isSelected ? '#7c3aed' : nodeColor;
+        ctx.stroke();
+
+        // Node Inner Fill
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        // Occupancy Color Accent Border
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = nodeColor;
+        ctx.stroke();
+
+        // Node Title Label
+        ctx.font = `600 ${isSelected ? '12px' : '11px'} Inter, sans-serif`;
+        ctx.fillStyle = '#0f172a';
+        ctx.textAlign = 'center';
+        ctx.fillText(node.title, node.x, node.y + node.radius + 16);
+
+        // Percentage Badge Inside Node
+        ctx.font = `700 10px "JetBrains Mono", monospace`;
+        ctx.fillStyle = nodeColor;
+        ctx.fillText(`${liveOcc}%`, node.x, node.y + 3);
+
+        ctx.restore();
+      });
+
+      // Render Marquee Selection Box
+      if (marqueeState.active) {
+        ctx.save();
+        ctx.strokeStyle = '#7c3aed';
+        ctx.fillStyle = 'rgba(124, 58, 237, 0.08)';
+        ctx.lineWidth = 1.5 / transform.scale;
+        ctx.setLineDash([4, 4]);
+        const rx = Math.min(marqueeState.startX, marqueeState.currentX);
+        const ry = Math.min(marqueeState.startY, marqueeState.currentY);
+        const rw = Math.abs(marqueeState.currentX - marqueeState.startX);
+        const rh = Math.abs(marqueeState.currentY - marqueeState.startY);
+        ctx.fillRect(rx, ry, rw, rh);
+        ctx.strokeRect(rx, ry, rw, rh);
+        ctx.restore();
+      }
+
+      ctx.restore();
+
+      requestAnimationFrame(render);
+    }
+
+    // Dynamic Connection Inspector Loop Options
+    function updateConnectionInspector(conn) {
+      const detailView = document.getElementById('view-node-detail');
+      const connView = document.getElementById('view-conn-detail');
+      const systemView = document.getElementById('view-system-overview');
+      const badge = document.getElementById('inspector-badge');
+      if (!connView || !systemView || !badge) return;
+
+      if (detailView) detailView.classList.add('hidden');
+      systemView.classList.add('hidden');
+      connView.classList.remove('hidden');
+      badge.innerText = 'Line Connection';
+
+      const fromNode = nodes.find(n => n.id === conn.from);
+      const toNode = nodes.find(n => n.id === conn.to);
+      
+      // Resolve exact current line color & capacity ratio
+      const strokeColor = getConnectionEffectiveColor(conn);
+      const lineCategoryKey = conn.category || (fromNode ? fromNode.category : 'shared');
+      const loopCap = loopCapacities[conn.loop] || 300;
+      const timeMult = getTimeUserVolumeMultiplier(simState.timeOfDay);
+      const currentFlowRate = Math.round((conn.density || 1.0) * 100 * timeMult);
+      const loadRatio = Math.round((currentFlowRate / loopCap) * 100);
+      const isOverloaded = loadRatio >= 100;
+
+      connView.innerHTML = `
+        <div class="space-y-4">
+          <div class="p-3.5 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <div id="inspector-conn-icon-badge" class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold transition-colors" style="background-color: ${isOverloaded ? '#e11d48' : strokeColor}">
+                  <i class="fa-solid fa-route text-sm"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-xs text-slate-900">${fromNode ? fromNode.title : 'Node'} → ${toNode ? toNode.title : 'Node'}</h3>
+                  <span class="text-[10px] text-slate-500 uppercase tracking-wider">${loopTitles[conn.loop] || conn.loop} Loop</span>
+                </div>
+              </div>
+              <button id="btn-close-conn-detail" class="text-slate-400 hover:text-slate-600 p-1">
+                <i class="fa-solid fa-xmark text-sm"></i>
+              </button>
+            </div>
+
+            <!-- Loop Capacity Load Bar -->
+            <div class="p-2.5 rounded-lg border text-xs space-y-1.5 ${isOverloaded ? 'bg-rose-50 border-rose-200 text-rose-900' : 'bg-slate-50 border-slate-200'}">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold flex items-center gap-1.5">
+                  <i class="fa-solid fa-gauge-high ${isOverloaded ? 'text-rose-600 animate-pulse' : 'text-sky-600'}"></i>
+                  Loop Capacity Utilization
+                </span>
+                <span class="font-mono font-bold ${isOverloaded ? 'text-rose-600' : 'text-slate-700'}">${loadRatio}%</span>
+              </div>
+              <div class="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-300 ${loadRatio >= 100 ? 'bg-rose-600' : (loadRatio >= 75 ? 'bg-amber-500' : 'bg-emerald-500')}" style="width: ${Math.min(100, loadRatio)}%"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-slate-500 pt-0.5">
+                <span>Flow Volume: <strong>${currentFlowRate} users/hr</strong></span>
+                <span>Max Capacity: <strong>${loopCap} users/hr</strong></span>
+              </div>
+            </div>
+
+            <div class="space-y-2.5 pt-2 border-t border-slate-100 text-xs">
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Line Classification Category</label>
+                <select id="select-conn-cat" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  ${Object.keys(categories).map(catKey => `
+                    <option value="${catKey}" ${lineCategoryKey === catKey ? 'selected' : ''}>${categories[catKey].name}</option>
+                  `).join('')}
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Loop Capacity Limit (users/hr)</label>
+                <div class="flex items-center space-x-2">
+                  <input type="number" id="input-conn-loop-capacity" value="${loopCap}" min="50" max="2000" step="25" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  <button id="btn-open-loop-mgr-from-conn" class="px-2.5 py-1.5 text-[11px] rounded-lg bg-sky-50 border border-sky-200 text-sky-700 font-semibold shrink-0 hover:bg-sky-100">Manage Loops</button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Line Color Accent</label>
+                <div class="flex items-center space-x-2">
+                  <input type="color" id="input-conn-color" value="${strokeColor}" class="w-8 h-8 rounded border border-slate-200 cursor-pointer p-0.5 bg-white">
+                  <button id="btn-reset-conn-color" class="px-2 py-1 text-[11px] rounded bg-slate-100 hover:bg-slate-200 text-slate-700">Use Category Color</button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Line Pattern Style</label>
+                <select id="select-conn-style" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  <option value="solid" ${conn.style === 'solid' ? 'selected' : ''}>Solid Line</option>
+                  <option value="dashed" ${conn.style === 'dashed' ? 'selected' : ''}>Dashed Line</option>
+                  <option value="dotted" ${conn.style === 'dotted' ? 'selected' : ''}>Dotted Line</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Curvature Offset: <span id="val-conn-curve">${(conn.curveOffset !== undefined ? conn.curveOffset : 0.25).toFixed(2)}</span></label>
+                <input type="range" id="slider-conn-curve" min="-0.8" max="0.8" step="0.05" value="${conn.curveOffset !== undefined ? conn.curveOffset : 0.25}" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600">
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Assigned Loop Pathway</label>
+                <select id="select-conn-loop" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  ${Object.keys(loopTitles).filter(k => k !== 'ALL').map(loopKey => `
+                    <option value="${loopKey}" ${conn.loop === loopKey ? 'selected' : ''}>${loopTitles[loopKey]}</option>
+                  `).join('')}
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-slate-500 font-medium mb-1">Flow Density Multiplier: <span id="val-conn-density">${(conn.density || 1.0).toFixed(1)}x</span></label>
+                <input type="range" id="slider-conn-density" min="0.5" max="3.0" step="0.1" value="${conn.density || 1.0}" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600">
+              </div>
+
+              <div class="flex items-center justify-between pt-1">
+                <span class="text-slate-500 font-medium">Show Directional Flow Arrow</span>
+                <input type="checkbox" id="chk-conn-arrow" ${conn.showArrow !== false ? 'checked' : ''} class="w-4 h-4 text-purple-600 rounded border-slate-300 focus:ring-purple-500 cursor-pointer">
+              </div>
+            </div>
+          </div>
+
+          <button id="btn-delete-conn" class="w-full px-3 py-2 rounded-xl text-xs font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-trash-can"></i> Delete Connection Line
+          </button>
+        </div>
+      `;
+
+      document.getElementById('btn-close-conn-detail')?.addEventListener('click', () => {
+        simState.selectedConnection = null;
+        showSystemOverview();
+      });
+
+      document.getElementById('btn-delete-conn')?.addEventListener('click', () => {
+        deleteSelectedConnection();
+      });
+
+      document.getElementById('btn-open-loop-mgr-from-conn')?.addEventListener('click', openLoopManagerModal);
+
+      // Loop Capacity Input Handler
+      document.getElementById('input-conn-loop-capacity')?.addEventListener('input', (e) => {
+        const val = Math.max(50, parseInt(e.target.value) || 300);
+        loopCapacities[conn.loop] = val;
+        autoSaveQuietly();
+      });
+
+      document.getElementById('input-conn-loop-capacity')?.addEventListener('change', () => {
+        saveHistoryState();
+        updateConnectionInspector(conn);
+      });
+
+      // Color picker real-time input
+      document.getElementById('input-conn-color')?.addEventListener('input', (e) => {
+        conn.color = e.target.value;
+        conn.customColor = true;
+        const badge = document.getElementById('inspector-conn-icon-badge');
+        if (badge) badge.style.backgroundColor = conn.color;
+        syncAllParticleColors();
+        autoSaveQuietly();
+      });
+
+      document.getElementById('input-conn-color')?.addEventListener('change', () => {
+        saveHistoryState();
+      });
+
+      document.getElementById('btn-reset-conn-color')?.addEventListener('click', () => {
+        saveHistoryState();
+        conn.customColor = false;
+        conn.color = '';
+        syncAllParticleColors();
+        updateConnectionInspector(conn);
+        autoSaveQuietly();
+      });
+
+      // Pattern Style selection
+      document.getElementById('select-conn-style')?.addEventListener('change', (e) => {
+        saveHistoryState();
+        conn.style = e.target.value;
+        autoSaveQuietly();
+      });
+
+      // Curvature slider real-time input
+      document.getElementById('slider-conn-curve')?.addEventListener('input', (e) => {
+        conn.curveOffset = parseFloat(e.target.value);
+        const valEl = document.getElementById('val-conn-curve');
+        if (valEl) valEl.innerText = conn.curveOffset.toFixed(2);
+        autoSaveQuietly();
+      });
+
+      document.getElementById('slider-conn-curve')?.addEventListener('change', () => {
+        saveHistoryState();
+      });
+
+      // Assigned Loop selection
+      document.getElementById('select-conn-loop')?.addEventListener('change', (e) => {
+        saveHistoryState();
+        conn.loop = e.target.value;
+        initParticles();
+        autoSaveQuietly();
+      });
+
+      // Density slider real-time input
+      document.getElementById('slider-conn-density')?.addEventListener('input', (e) => {
+        conn.density = parseFloat(e.target.value);
+        const valEl = document.getElementById('val-conn-density');
+        if (valEl) valEl.innerText = conn.density.toFixed(1) + 'x';
+        initParticles();
+        autoSaveQuietly();
+      });
+
+      document.getElementById('slider-conn-density')?.addEventListener('change', () => {
+        saveHistoryState();
+      });
+
+      // Arrow toggle checkbox
+      document.getElementById('chk-conn-arrow')?.addEventListener('change', (e) => {
+        saveHistoryState();
+        conn.showArrow = e.target.checked;
+        autoSaveQuietly();
+      });
+    }
+
+    function refreshInspectorOccupancyMetrics(node) {
+      const liveOcc = getNodeOccupancy(node, simState.timeOfDay);
+      const currentUsers = Math.round(node.maxCapacity * (liveOcc / 100));
+      const occEl = document.getElementById('inspector-live-occ');
+      const usersEl = document.getElementById('inspector-active-users');
+      const barEl = document.getElementById('inspector-load-bar');
+      if (occEl) occEl.innerText = `${liveOcc}%`;
+      if (usersEl) usersEl.innerText = `${currentUsers} / ${node.maxCapacity}`;
+      if (barEl) barEl.style.width = `${liveOcc}%`;
+    }
+
+    // --- CANVAS INTERACTION & POINTER EVENT LISTENERS ---
+    function initCanvas() {
+      if (!canvas) return;
+      
+      const resize = () => {
+        const parent = canvas.parentElement;
+        if (!parent) return;
+        width = parent.clientWidth;
+        height = parent.clientHeight;
+        canvas.width = width;
+        canvas.height = height;
+      };
+
+      window.addEventListener('resize', resize);
+      resize();
+
+      canvas.addEventListener('mousedown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const sx = e.clientX - rect.left;
+        const sy = e.clientY - rect.top;
+        const wp = screenToWorld(sx, sy);
+
+        // Check node click / drag
+        let hitNode = null;
+        for (let i = nodes.length - 1; i >= 0; i--) {
+          const n = nodes[i];
+          const dist = Math.hypot(wp.x - n.x, wp.y - n.y);
+          if (dist <= n.radius) {
+            hitNode = n;
+            break;
+          }
+        }
+
+        if (simState.isConnectMode) {
+          if (hitNode) {
+            if (!simState.connectStartNode) {
+              simState.connectStartNode = hitNode;
+            } else if (simState.connectStartNode.id !== hitNode.id) {
+              saveHistoryState();
+              const newConn = {
+                id: 'c_' + Date.now(),
+                from: simState.connectStartNode.id,
+                to: hitNode.id,
+                loop: simState.activeLoopFilter !== 'ALL' ? simState.activeLoopFilter : 'OFFICE_WORK',
+                density: 1.5,
+                curveOffset: 0.25,
+                style: 'solid',
+                showArrow: true,
+                category: hitNode.category
+              };
+              connections.push(newConn);
+              simState.connectStartNode = null;
+              initParticles();
+              updateConnectionInspector(newConn);
+            }
+          } else {
+            simState.connectStartNode = null;
+          }
+          return;
+        }
+
+        if (hitNode) {
+          if (e.altKey) {
+            saveHistoryState();
+            const clonedNode = {
+              id: 'n_' + Date.now(),
+              title: `${hitNode.title} (Copy)`,
+              category: hitNode.category,
+              x: hitNode.x + 50,
+              y: hitNode.y + 50,
+              radius: hitNode.radius,
+              baseOccupancy: hitNode.baseOccupancy,
+              maxCapacity: hitNode.maxCapacity,
+              typeLabel: hitNode.typeLabel,
+              color: hitNode.color,
+              customColor: hitNode.customColor,
+              icon: hitNode.icon
+            };
+
+            nodes.push(clonedNode);
+            simState.selectedNode = clonedNode;
+            simState.selectedConnection = null;
+            simState.draggedNode = clonedNode;
+            selectedNodesArray = [];
+            initParticles();
+            updateInspectorPanel(clonedNode);
+            return;
+          }
+
+          simState.selectedNode = hitNode;
+          simState.selectedConnection = null;
+          simState.draggedNode = hitNode;
+          selectedNodesArray = [];
+          updateInspectorPanel(hitNode);
+          return;
+        }
+
+        // Check connection line hit along entire curve
+        let hitConn = null;
+        let closestConnDist = 14 / transform.scale;
+        for (let i = connections.length - 1; i >= 0; i--) {
+          const c = connections[i];
+          if (simState.activeLoopFilter !== 'ALL' && c.loop !== simState.activeLoopFilter) continue;
+          const fn = nodes.find(n => n.id === c.from);
+          const tn = nodes.find(n => n.id === c.to);
+          if (fn && tn) {
+            const curve = getCurvePoints(fn, tn, c.curveOffset !== undefined ? c.curveOffset : 0.25);
+            const dist = distanceToQuadraticBezier(wp, curve.p1, curve.cp, curve.p2);
+            if (dist < closestConnDist) {
+              closestConnDist = dist;
+              hitConn = c;
+            }
+          }
+        }
+
+        if (hitConn) {
+          simState.selectedConnection = hitConn;
+          simState.selectedNode = null;
+          selectedNodesArray = [];
+          updateConnectionInspector(hitConn);
+          return;
+        }
+
+        // Start Marquee Long-Press Timer (250ms hold)
+        marqueeState.timer = setTimeout(() => {
+          marqueeState.active = true;
+          marqueeState.startX = wp.x;
+          marqueeState.startY = wp.y;
+          marqueeState.currentX = wp.x;
+          marqueeState.currentY = wp.y;
+          transform.isDragging = false;
+        }, 250);
+
+        // Start Panning
+        transform.isDragging = true;
+        transform.startX = e.clientX - transform.x;
+        transform.startY = e.clientY - transform.y;
+        simState.selectedNode = null;
+        simState.selectedConnection = null;
+        selectedNodesArray = [];
+        showSystemOverview();
+      });
+
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const sx = e.clientX - rect.left;
+        const sy = e.clientY - rect.top;
+        const wp = screenToWorld(sx, sy);
+        simState.mouseWorldPos = wp;
+
+        if (marqueeState.active) {
+          marqueeState.currentX = wp.x;
+          marqueeState.currentY = wp.y;
+
+          // Select nodes within marquee bounds
+          const minX = Math.min(marqueeState.startX, marqueeState.currentX);
+          const maxX = Math.max(marqueeState.startX, marqueeState.currentX);
+          const minY = Math.min(marqueeState.startY, marqueeState.currentY);
+          const maxY = Math.max(marqueeState.startY, marqueeState.currentY);
+
+          selectedNodesArray = nodes.filter(n => n.x >= minX && n.x <= maxX && n.y >= minY && n.y <= maxY);
+          return;
+        }
+
+        if (simState.draggedNode) {
+          if (marqueeState.timer) clearTimeout(marqueeState.timer);
+          simState.draggedNode.x = wp.x;
+          simState.draggedNode.y = wp.y;
+          canvas.classList.add('is-dragging');
+          return;
+        }
+
+        if (transform.isDragging) {
+          if (marqueeState.timer) clearTimeout(marqueeState.timer);
+          transform.x = e.clientX - transform.startX;
+          transform.y = e.clientY - transform.startY;
+          canvas.classList.add('is-dragging');
+          return;
+        }
+
+        // Hover detection
+        let hoveredN = null;
+        for (let i = nodes.length - 1; i >= 0; i--) {
+          const n = nodes[i];
+          if (Math.hypot(wp.x - n.x, wp.y - n.y) <= n.radius) {
+            hoveredN = n;
+            break;
+          }
+        }
+        simState.hoveredNode = hoveredN;
+
+        let hoveredC = null;
+        if (!hoveredN) {
+          let minHoverDist = 14 / transform.scale;
+          for (let i = connections.length - 1; i >= 0; i--) {
+            const c = connections[i];
+            if (simState.activeLoopFilter !== 'ALL' && c.loop !== simState.activeLoopFilter) continue;
+            const fn = nodes.find(n => n.id === c.from);
+            const tn = nodes.find(n => n.id === c.to);
+            if (fn && tn) {
+              const curve = getCurvePoints(fn, tn, c.curveOffset !== undefined ? c.curveOffset : 0.25);
+              const dist = distanceToQuadraticBezier(wp, curve.p1, curve.cp, curve.p2);
+              if (dist < minHoverDist) {
+                minHoverDist = dist;
+                hoveredC = c;
+              }
+            }
+          }
+        }
+        simState.hoveredConnection = hoveredC;
+        if (!simState.isConnectMode) {
+          if (hoveredN || hoveredC) canvas.classList.add('cursor-pointer-black');
+          else canvas.classList.remove('cursor-pointer-black');
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (marqueeState.timer) clearTimeout(marqueeState.timer);
+        if (marqueeState.active) {
+          marqueeState.active = false;
+          if (selectedNodesArray.length > 0) {
+            transform.isDragging = false;
+          }
+        }
+
+        if (simState.draggedNode) {
+          saveHistoryState();
+          simState.draggedNode = null;
+        }
+        transform.isDragging = false;
+        canvas.classList.remove('is-dragging');
+      });
+
+      // Canvas Zoom Wheel
+      canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+        const newScale = Math.min(Math.max(transform.scale * zoomFactor, 0.3), 3.0);
+
+        transform.x = mouseX - (mouseX - transform.x) * (newScale / transform.scale);
+        transform.y = mouseY - (mouseY - transform.y) * (newScale / transform.scale);
+        transform.scale = newScale;
+      }, { passive: false });
+    }
+
+    // --- UI MODALS & CONTROLS BINDING ---
+    function populateCategoryDropdown(selectId) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+      select.innerHTML = '';
+      Object.keys(categories).forEach(catKey => {
+        const opt = document.createElement('option');
+        opt.value = catKey;
+        opt.innerText = categories[catKey].name;
+        select.appendChild(opt);
+      });
+    }
+
+    function openAddNodeModal() {
+      populateCategoryDropdown('select-new-node-cat');
+      const modal = document.getElementById('modal-add-node');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeAddNodeModal() {
+      const modal = document.getElementById('modal-add-node');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    document.getElementById('btn-open-add-node-modal')?.addEventListener('click', openAddNodeModal);
+    document.getElementById('btn-close-add-node-modal')?.addEventListener('click', closeAddNodeModal);
+    document.getElementById('btn-cancel-add-node-modal')?.addEventListener('click', closeAddNodeModal);
+
+    document.getElementById('btn-add-cat-from-node-modal')?.addEventListener('click', () => {
+      saveHistoryState();
+      const newKey = 'custom_' + Date.now();
+      categories[newKey] = {
+        name: 'New Custom Zone',
+        color: '#0284c7',
+        bg: '#e0f2fe',
+        desc: 'Custom spatial classification zone.'
+      };
+      renderCategoryLegend();
+      populateCategoryDropdown('select-new-node-cat');
+      openCategoryModal(newKey);
+    });
+
+    document.getElementById('btn-save-new-node')?.addEventListener('click', () => {
+      const title = document.getElementById('input-new-node-title').value.trim();
+      const categoryKey = document.getElementById('select-new-node-cat').value;
+      const maxCap = parseInt(document.getElementById('input-new-node-cap').value) || 100;
+      const baseOcc = parseInt(document.getElementById('input-new-node-base').value) || 50;
+      const icon = document.getElementById('select-new-node-icon').value;
+
+      if (title) {
+        saveHistoryState();
+        const centerWorld = screenToWorld(width / 2, height / 2);
+        const catObj = categories[categoryKey] || { name: 'Custom Spatial Node', color: '#0284c7' };
+
+        const newNode = {
+          id: 'n_' + Date.now(),
+          title: title,
+          category: categoryKey,
+          x: centerWorld.x + (Math.random() * 60 - 30),
+          y: centerWorld.y + (Math.random() * 60 - 30),
+          radius: 30,
+          baseOccupancy: baseOcc,
+          maxCapacity: maxCap,
+          typeLabel: catObj.name,
+          color: catObj.color,
+          icon: icon
+        };
+
+        nodes.push(newNode);
+        document.getElementById('input-new-node-title').value = '';
+        closeAddNodeModal();
+        simState.selectedNode = newNode;
+        updateInspectorPanel(newNode);
+      }
+    });
+
+    // Connect mode toggle button
+    document.getElementById('btn-toggle-connect-mode')?.addEventListener('click', () => {
+      simState.isConnectMode = !simState.isConnectMode;
+      simState.connectStartNode = null;
+
+      const btn = document.getElementById('btn-toggle-connect-mode');
+      const label = document.getElementById('connect-mode-label');
+
+      if (simState.isConnectMode) {
+        if (btn) btn.classList.add('active');
+        if (label) label.innerText = 'Connect Mode: ON';
+        canvas.classList.add('cursor-crosshair-black');
+      } else {
+        if (btn) btn.classList.remove('active');
+        if (label) label.innerText = 'Connect Mode: OFF';
+        canvas.classList.remove('cursor-crosshair-black');
+      }
+    });
+
+    // Play/Pause button toggle
+    document.getElementById('btn-play-pause')?.addEventListener('click', () => {
+      simState.isPlaying = !simState.isPlaying;
+      const icon = document.getElementById('icon-play-pause');
+      if (icon) {
+        icon.className = simState.isPlaying ? 'fa-solid fa-pause text-sm' : 'fa-solid fa-play text-sm';
+      }
+    });
+
+    // Heatmap toggle
+    document.getElementById('btn-toggle-heatmap')?.addEventListener('click', () => {
+      simState.showHeatmap = !simState.showHeatmap;
+      const btn = document.getElementById('btn-toggle-heatmap');
+      if (btn) {
+        if (simState.showHeatmap) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }
+    });
+
+    // Camera Zoom Control Buttons
+    document.getElementById('btn-zoom-in')?.addEventListener('click', () => {
+      transform.scale = Math.min(transform.scale * 1.2, 3.0);
+    });
+    document.getElementById('btn-zoom-out')?.addEventListener('click', () => {
+      transform.scale = Math.max(transform.scale / 1.2, 0.3);
+    });
+    document.getElementById('btn-reset-view')?.addEventListener('click', () => {
+      transform.x = 0;
+      transform.y = 0;
+      transform.scale = 0.85;
+    });
+
+    // Scenario preset selector
+    document.getElementById('select-scenario')?.addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val === 'ALL') {
+        simState.autoAdvanceTime = true;
+      } else {
+        simState.autoAdvanceTime = false;
+        switch(val) {
+          case 'MORNING_EXPRESS': simState.timeOfDay = 8.0; selectLoopFilter('GRAB_GO'); break;
+          case 'MIDDAY_CROSSOVER': simState.timeOfDay = 12.5; selectLoopFilter('SOCIAL_DINING'); break;
+          case 'BOARDROOM_CLIENT': simState.timeOfDay = 14.5; selectLoopFilter('OFFICE_WORK'); break;
+          case 'EVENING_SOCIAL': simState.timeOfDay = 18.5; selectLoopFilter('LEISURE'); break;
+          case 'SERVICE_LOGISTICS': simState.timeOfDay = 10.0; selectLoopFilter('OPERATIONS'); break;
+        }
+      }
+    });
+
+    // Export Canvas Snapshot Image
+    document.getElementById('btn-export-png')?.addEventListener('click', () => {
+      if (!canvas) return;
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `spatial-loop-system-${Date.now()}.png`;
+      link.href = dataUrl;
+      link.click();
+      showToast('Snapshot downloaded to your Downloads folder!');
+    });
+
+    // --- WORKSPACE PERSISTENCE STORAGE ---
+    const STORAGE_KEY = 'commercial_office_loop_workspace_v4';
+
+    function buildWorkspacePayload() {
+      const titleEl = document.getElementById('app-main-title');
+      return {
+        appTitle: titleEl ? titleEl.innerText.trim() : 'User Analysis',
+        nodes,
+        connections,
+        categories,
+        loopTitles,
+        loopDescs,
+        loopColors,
+        loopCapacities,
+        transform: { x: transform.x, y: transform.y, scale: transform.scale },
+        savedAt: new Date().toISOString()
+      };
+    }
+
+    function autoSaveQuietly() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(buildWorkspacePayload()));
+        showLiveSaveIndicator();
+      } catch (err) {
+        console.error('Auto-save failed', err);
+      }
+    }
+
+    function showLiveSaveIndicator() {
+      let indicator = document.getElementById('live-save-status-indicator');
+      if (!indicator) {
+        const headerActions = document.querySelector('header .flex.items-center.space-x-2');
+        if (headerActions) {
+          indicator = document.createElement('div');
+          indicator.id = 'live-save-status-indicator';
+          indicator.className = 'text-[10px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-mono font-bold flex items-center gap-1.5 transition-all duration-300 shadow-sm';
+          indicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live Saved';
+          headerActions.insertBefore(indicator, headerActions.firstChild);
+        }
+      } else {
+        indicator.className = 'text-[10px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-mono font-bold flex items-center gap-1.5 transition-all duration-300 shadow-sm opacity-100';
+        setTimeout(() => {
+          if (indicator) indicator.className = 'text-[10px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-mono font-bold flex items-center gap-1.5 transition-all duration-300 shadow-sm opacity-60';
+        }, 1200);
+      }
+    }
+
+    function saveWorkspaceState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(buildWorkspacePayload()));
+        showToast('All loops, custom lines, nodes, and edits saved successfully!');
+        showLiveSaveIndicator();
+      } catch (err) {
+        console.error('Failed to save workspace', err);
+      }
+    }
+
+    function loadWorkspaceState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (data.appTitle) {
+          const titleEl = document.getElementById('app-main-title');
+          if (titleEl) titleEl.innerText = data.appTitle;
+          document.title = data.appTitle;
+        }
+        if (data.nodes) {
+          nodes.length = 0;
+          data.nodes.forEach(n => nodes.push(n));
+        }
+        if (data.connections) {
+          connections.length = 0;
+          data.connections.forEach(c => connections.push(c));
+        }
+        if (data.categories) {
+          Object.keys(categories).forEach(k => delete categories[k]);
+          Object.assign(categories, data.categories);
+        }
+        if (data.loopTitles) {
+          Object.keys(loopTitles).forEach(k => delete loopTitles[k]);
+          Object.assign(loopTitles, data.loopTitles);
+        }
+        if (data.loopDescs) {
+          Object.keys(loopDescs).forEach(k => delete loopDescs[k]);
+          Object.assign(loopDescs, data.loopDescs);
+        }
+        if (data.loopColors) {
+          Object.keys(loopColors).forEach(k => delete loopColors[k]);
+          Object.assign(loopColors, data.loopColors);
+        }
+        if (data.loopCapacities) {
+          Object.keys(loopCapacities).forEach(k => delete loopCapacities[k]);
+          Object.assign(loopCapacities, data.loopCapacities);
+        }
+        if (data.transform) {
+          transform.x = data.transform.x ?? transform.x;
+          transform.y = data.transform.y ?? transform.y;
+          transform.scale = data.transform.scale ?? transform.scale;
+        }
+        return true;
+      } catch (err) {
+        console.error('Failed to load saved workspace', err);
+        return false;
+      }
+    }
+
+    function showToast(message) {
+      let toast = document.getElementById('app-toast-notification');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'app-toast-notification';
+        toast.className = 'fixed bottom-6 right-6 z-50 glass-panel bg-emerald-600 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2 transition-all duration-300 opacity-0 translate-y-2';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${message}</span>`;
+      setTimeout(() => {
+        toast.classList.remove('opacity-0', 'translate-y-2');
+      }, 10);
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+      }, 2500);
+    }
+
+    document.getElementById('btn-save-workspace')?.addEventListener('click', saveWorkspaceState);
+
+    // Comprehensive global listeners to guarantee every single edit, input, change, and drag triggers live auto-save immediately
+    document.addEventListener('input', () => {
+      autoSaveQuietly();
+    }, { passive: true });
+
+    document.addEventListener('change', () => {
+      autoSaveQuietly();
+    }, { passive: true });
+
+    window.addEventListener('mouseup', () => {
+      autoSaveQuietly();
+    });
+
+    document.getElementById('btn-export-json')?.addEventListener('click', () => {
+      const workspaceData = buildWorkspacePayload();
+      const blob = new Blob([JSON.stringify(workspaceData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `loop-system-backup-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('JSON backup saved to your Downloads folder!');
+    });
+
+    document.getElementById('btn-reset-factory')?.addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      window.location.reload();
+    });
+
+    // --- STARTUP INITIALIZATION ---
+    window.addEventListener('load', () => {
+      loadWorkspaceState();
+      
+      const titleEl = document.getElementById('app-main-title');
+      if (titleEl) {
+        titleEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            titleEl.blur();
+          }
+        });
+        titleEl.addEventListener('input', () => {
+          autoSaveQuietly();
+        });
+        titleEl.addEventListener('blur', () => {
+          const cleanText = titleEl.innerText.trim() || 'User Analysis';
+          titleEl.innerText = cleanText;
+          document.title = cleanText;
+          saveWorkspaceState();
+        });
+      }
+
+      window.addEventListener('beforeunload', () => {
+        autoSaveQuietly();
+      });
+
+      initCanvas();
+      renderCategoryLegend();
+      renderLoopFilterButtons();
+      initParticles();
+      updateUndoRedoButtons();
+      showSystemOverview();
+      requestAnimationFrame(render);
+    });
+  </script>
+
+</body></html>
